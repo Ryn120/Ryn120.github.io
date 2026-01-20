@@ -41,7 +41,7 @@ if (tableBody) {
                     </td>
                     <td><b>${user.code}</b></td>
                     <td>${user.nama}</td>
-                    <td>${user.nomorId || '-'}</td>
+                    <td>${user.nomorTiket || '-'}</td>
                     <td>${user.email}</td>
                     <td>${user.hp || '-'}</td>
                     <td><button class="btn-delete" data-id="${user.id}">Hapus</button></td>
