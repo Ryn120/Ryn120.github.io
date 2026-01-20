@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran QR Code</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="active">Daftar</a>
+        <a href="admin.html">Data Admin</a>
+        <a href="scan.html">Scan QR</a>
+    </nav>
+
+    <div class="container">
+        <h2>Form Pendaftaran</h2>
+        <form id="registerForm">
+            <input type="text" id="nama" placeholder="Nama Lengkap" required>
+            <input type="text" id="nomorId" placeholder="Nomor Induk / KTP" required>
+            <input type="email" id="email" placeholder="Email (Gmail)" required>
+            <input type="tel" id="hp" placeholder="Nomor HP" required>
+            <button type="submit">Daftar & Generate QR</button>
+        </form>
+
+        <div id="resultArea" style="display:none;">
+            <h3>Pendaftaran Berhasil!</h3>
+            <p>Kode Unik: <b id="uniqueCode"></b></p>
+            <div id="qrcode"></div>
+            <p><small>Simpan QR Code ini untuk verifikasi.</small></p>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
