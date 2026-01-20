@@ -64,32 +64,28 @@ if (registerForm) {
                 });
 
 
-            // 4. Tampilkan Hasil & QR
-            registerForm.style.display = 'none';
-            document.getElementById('resultArea').style.display = 'block';
-            document.getElementById('uniqueCode').innerText = randomCode;
+            // Di dalam event listener form pendaftaran, setelah proses simpan Firebase
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = ""; // Bersihkan QR lama jika ada
 
-            // Tambahkan baris ini setelah library QRCode men-generate gambar
-            new QRCode(document.getElementById("qrcode"), {
-              text: randomCode,
-               width: 150,
-              height: 150
-});
+            const qrcode = new QRCode(qrContainer, {
+                text: randomCode,
+                width: 200,
+                height: 200
+            });
 
-            // Logika Unduh Gambar
-            const downloadBtn = document.getElementById('downloadBtn');
-            downloadBtn.onclick = function() {
-    // Ambil elemen gambar di dalam div qrcode
-                const qrImg = document.querySelector('#qrcode img');
-                if (qrImg) {
+// Tunggu sebentar sampai library selesai menggambar, lalu aktifkan tombol unduh
+            setTimeout(() => {
+                const qrImg = qrContainer.querySelector('img');
+                const downloadBtn = document.getElementById('downloadBtn');
+    
+                downloadBtn.onclick = function() {
                     const link = document.createElement('a');
-                    link.href = qrImg.src;
-                    link.download = `QR-${randomCode}.png`;
+                    link.href = qrImg.src; // Mengambil sumber gambar Base64
+                    link.download = `Tiket-${nama}-${randomCode}.png`;
                     link.click();
-    } else {
-        alert("Gambar belum siap, silakan tunggu.");
-    }
-};
+    };
+}, 500);
 
         } catch (error) {
             alert("Error: " + error.message);
