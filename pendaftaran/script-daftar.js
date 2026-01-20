@@ -1,10 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-    getFirestore, collection, addDoc, getDocs,
-    query, where, or, limit
+  getFirestore, collection, addDoc,
+  query, where, or, getDocs, limit
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// --- Konfigurasi Firebase ---
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyDCEU9nyFJi-eSy0Uq3ysXbQlV7Ri4x-Gs",
   authDomain: "qr-generet01.firebaseapp.com",
@@ -16,106 +16,96 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const dbCollection = "peserta";
+const pesertaRef = collection(db, "peserta");
 
-const registerForm = document.getElementById('registerForm');
+// ELEMENT
+const menu = document.getElementById("menuAksi");
+const formDaftar = document.getElementById("formDaftar");
+const formCek = document.getElementById("formCek");
+const formVerif = document.getElementById("formVerif");
+const hasil = document.getElementById("hasil");
+const qrBox = document.getElementById("qrcode");
 
-if (registerForm) {
-    registerForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = registerForm.querySelector('button');
+let dataPeserta = null;
 
-        // Ambil dan trim nilai input
-        const nama = document.getElementById('nama').value.trim();
-        const nomorTiket = document.getElementById('nomorTiket').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const hp = document.getElementById('hp').value.trim();
+// ===== MENU =====
+btnDaftar.onclick = () => show(formDaftar);
+btnLihat.onclick = () => show(formCek);
 
-        // Validasi sederhana
-        if (!nama || !nomorTiket || !email || !hp) {
-            alert("Semua bidang harus diisi.");
-            return;
-        }
+function show(el) {
+  [menu, formDaftar, formCek, formVerif, hasil].forEach(e => e.style.display = "none");
+  el.style.display = "block";
+}
 
-        btn.innerText = "Memproses...";
-        btn.disabled = true;
+// ===== DAFTAR =====
+formDaftar.onsubmit = async (e) => {
+  e.preventDefault();
 
-        try {
-            // 1. Cek duplikasi (OR query Firestore terbaru)7
-            const q = query(
-                collection(db, dbCollection),
-                or(
-                    where("email", "==", email),
-                    where("nomorTiket", "==", nomorTiket),
-                    where("hp", "==", hp)
-                ),
-                limit(1) // batasi satu hasil untuk efisiensi
-            );
+  const nama = namaInput.value.trim();
+  const nomorTiket = nomorTiket.value.trim();
+  const email = emailInput.value.trim();
+  const hp = hpInput.value.trim();
 
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                alert("Gagal! Nomor Tiket, Email, atau HP sudah terdaftar.");
-                btn.innerText = "Daftar & Ambil QR";
-                btn.disabled = false;
-                return;
-            }
+  const q = query(
+    pesertaRef,
+    or(
+      where("nomorTiket", "==", nomorTiket),
+      where("email", "==", email),
+      where("hp", "==", hp)
+    ),
+    limit(1)
+  );
 
-            // 2. Generate kode unik 8 digit
-            const randomCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+  const cek = await getDocs(q);
+  if (!cek.empty) return alert("Data sudah terdaftar");
 
-            // 3. Simpan data ke Firestore
-            await addDoc(collection(db, dbCollection), {
-                nama: nama,
-                nomorTiket: nomorTiket,
-                email: email,
-                hp: hp,
-                code: randomCode,
-                createdAt: new Date()
-            });
+  const code = Math.floor(10000000 + Math.random() * 90000000).toString();
 
-            // 4. Tampilkan hasil & buat QR code
-            registerForm.style.display = 'none';
-            const resultArea = document.getElementById('resultArea');
-            if (resultArea) resultArea.style.display = 'block';
+  await addDoc(pesertaRef, { nama, nomorTiket, email, hp, code });
 
-            const uniqueCodeDisplay = document.getElementById('uniqueCode');
-            if (uniqueCodeDisplay) uniqueCodeDisplay.innerText = randomCode;
+  tampilQR(code, nomorTiket);
+};
 
-            const qrContainer = document.getElementById("qrcode");
-            qrContainer.innerHTML = ""; // kosongkan dulu
-            new QRCode(qrContainer, {
-                text: randomCode,
-                width: 200,
-                height: 200,
-                correctLevel: QRCode.CorrectLevel.H
-            });
+// ===== CEK TIKET =====
+formCek.onsubmit = async (e) => {
+  e.preventDefault();
+  const tiket = cekTiket.value.trim();
 
-            // Pasang event unduh
-            const downloadBtn = document.getElementById('downloadBtn');
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', function() {
-                    const qrImg = qrContainer.querySelector('img');
-                    const qrCanvas = qrContainer.querySelector('canvas');
-                    const link = document.createElement('a');
+  const q = query(pesertaRef, where("nomorTiket", "==", tiket), limit(1));
+  const snap = await getDocs(q);
 
-                    if (qrImg && qrImg.src) {
-                        link.href = qrImg.src;
-                    } else if (qrCanvas) {
-                        link.href = qrCanvas.toDataURL("image/png");
-                    } else {
-                        alert("Gagal memproses gambar. Silakan screenshot layar.");
-                        return;
-                    }
-                    link.download = `Tiket-${nama}-${randomCode}.png`;
-                    link.click();
-                });
-            }
+  if (snap.empty) return alert("Tiket tidak ditemukan");
 
-        } catch (error) {
-            console.error("Error pendaftaran:", error);
-            alert("Terjadi kesalahan: " + error.message);
-            btn.innerText = "Daftar & Ambil QR";
-            btn.disabled = false;
-        }
-    });
+  dataPeserta = snap.docs[0].data();
+  show(formVerif);
+};
+
+// ===== VERIFIKASI =====
+formVerif.onsubmit = (e) => {
+  e.preventDefault();
+
+  if (
+    verifNama.value.trim().toLowerCase() !== dataPeserta.nama.toLowerCase() ||
+    verifHp.value.trim() !== dataPeserta.hp
+  ) {
+    return alert("Verifikasi gagal");
+  }
+
+  tampilQR(dataPeserta.code, dataPeserta.nomorTiket);
+};
+
+// ===== QR =====
+function tampilQR(code, tiket) {
+  show(hasil);
+  qrBox.innerHTML = "";
+
+  new QRCode(qrBox, { text: code, width: 200, height: 200 });
+
+  downloadQR.onclick = () => {
+    const img = qrBox.querySelector("img");
+    const link = document.createElement("a");
+    link.href = img.src;
+    link.download = `QR-${tiket}.png`;
+    link.click();
+  };
 }
