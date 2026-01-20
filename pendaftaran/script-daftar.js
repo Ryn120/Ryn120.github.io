@@ -55,10 +55,14 @@ if (registerForm) {
 
             // 3. Simpan ke Firebase
             await addDoc(collection(db, dbCollection), {
-                nama, nomorTiket, email, hp,
-                code: randomCode,
-                createdAt: new Date()
-            });
+                  nama: nama,
+                  nomorTiket: nomorTiket, // Nama field di database berubah jadi nomorTiket
+                  email: email,
+                  hp: hp,
+                  code: randomCode,
+                  createdAt: new Date()
+                });
+
 
             // 4. Tampilkan Hasil & QR
             registerForm.style.display = 'none';
