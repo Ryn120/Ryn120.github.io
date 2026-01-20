@@ -27,13 +27,14 @@ if (registerForm) {
         btn.innerText = "Memproses...";
         btn.disabled = true;
 
+        // Pastikan ID di HTML juga sudah diubah menjadi 'nomorTiket'
         const nama = document.getElementById('nama').value;
         const nomorTiket = document.getElementById('nomorTiket').value;
         const email = document.getElementById('email').value;
         const hp = document.getElementById('hp').value;
 
         try {
-            // 1. Cek Duplikasi (Email/ID/HP tidak boleh sama)
+            // 1. Cek Duplikasi di Database (Email/Tiket/HP tidak boleh sama)
             const q = query(collection(db, dbCollection), 
                 or(
                     where("email", "==", email),
@@ -44,51 +45,78 @@ if (registerForm) {
             
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
-                alert("Gagal! Data (Tiket/Email/HP) sudah terdaftar.");
+                alert("Gagal! Nomor Tiket, Email, atau HP sudah terdaftar.");
                 btn.innerText = "Daftar & Ambil QR";
                 btn.disabled = false;
                 return;
             }
 
-            // 2. Generate 8 Angka Random Unik
+            // 2. Generate 8 Angka Random Unik untuk QR
             const randomCode = Math.floor(10000000 + Math.random() * 90000000).toString();
 
-            // 3. Simpan ke Firebase
+            // 3. Simpan ke Firebase dengan field 'nomorTiket'
             await addDoc(collection(db, dbCollection), {
-                  nama: nama,
-                  nomorTiket: nomorTiket, // Nama field di database berubah jadi nomorTiket
-                  email: email,
-                  hp: hp,
-                  code: randomCode,
-                  createdAt: new Date()
-                });
+                nama: nama,
+                nomorTiket: nomorTiket, 
+                email: email,
+                hp: hp,
+                code: randomCode,
+                createdAt: new Date()
+            });
 
+            // 4. Tampilkan Area Hasil & Generate QR
+            registerForm.style.display = 'none';
+            const resultArea = document.getElementById('resultArea');
+            if (resultArea) resultArea.style.display = 'block';
+            
+            const uniqueCodeDisplay = document.getElementById('uniqueCode');
+            if (uniqueCodeDisplay) uniqueCodeDisplay.innerText = randomCode;
 
-            // Di dalam event listener form pendaftaran, setelah proses simpan Firebase
             const qrContainer = document.getElementById("qrcode");
-            qrContainer.innerHTML = ""; // Bersihkan QR lama jika ada
+            qrContainer.innerHTML = ""; // Bersihkan QR lama
 
+            // Membuat QR Code
             const qrcode = new QRCode(qrContainer, {
                 text: randomCode,
                 width: 200,
-                height: 200
+                height: 200,
+                correctLevel : QRCode.CorrectLevel.H
             });
 
-// Tunggu sebentar sampai library selesai menggambar, lalu aktifkan tombol unduh
+            // 5. Logika Unduh Gambar (Solusi agar gambar bisa dibuka)
+            // Kita butuh timeout agar library QRCode selesai menggambar ke Canvas/IMG
             setTimeout(() => {
-                const qrImg = qrContainer.querySelector('img');
                 const downloadBtn = document.getElementById('downloadBtn');
-    
-                downloadBtn.onclick = function() {
-                    const link = document.createElement('a');
-                    link.href = qrImg.src; // Mengambil sumber gambar Base64
-                    link.download = `Tiket-${nama}-${randomCode}.png`;
-                    link.click();
-    };
-}, 500);
+                if (downloadBtn) {
+                    downloadBtn.onclick = function() {
+                        // Mencari elemen gambar yang dihasilkan library
+                        const qrImg = qrContainer.querySelector('img');
+                        const qrCanvas = qrContainer.querySelector('canvas');
+                        
+                        const link = document.createElement('a');
+                        
+                        // Jika library menghasilkan IMG (Base64), ambil src-nya
+                        // Jika hanya Canvas, konversi canvas ke DataURL
+                        if (qrImg && qrImg.src) {
+                            link.href = qrImg.src;
+                        } else if (qrCanvas) {
+                            link.href = qrCanvas.toDataURL("image/png");
+                        } else {
+                            alert("Gagal memproses gambar. Silakan screenshot layar.");
+                            return;
+                        }
+
+                        link.download = `Tiket-${nama}-${randomCode}.png`;
+                        link.click();
+                    };
+                }
+            }, 800);
+
+            alert("Pendaftaran Berhasil!");
 
         } catch (error) {
-            alert("Error: " + error.message);
+            console.error("Error pendaftaran:", error);
+            alert("Terjadi kesalahan: " + error.message);
             btn.innerText = "Daftar & Ambil QR";
             btn.disabled = false;
         }
