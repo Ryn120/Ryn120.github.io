@@ -28,7 +28,7 @@ if (registerForm) {
         btn.disabled = true;
 
         const nama = document.getElementById('nama').value;
-        const nomorId = document.getElementById('nomorId').value;
+        const nomorId = document.getElementById('nomorTiket').value;
         const email = document.getElementById('email').value;
         const hp = document.getElementById('hp').value;
 
@@ -37,14 +37,14 @@ if (registerForm) {
             const q = query(collection(db, dbCollection), 
                 or(
                     where("email", "==", email),
-                    where("nomorId", "==", nomorId),
+                    where("nomorTiket", "==", nomorId),
                     where("hp", "==", hp)
                 )
             );
             
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
-                alert("Gagal! Data (ID/Email/HP) sudah terdaftar.");
+                alert("Gagal! Data (Tiket/Email/HP) sudah terdaftar.");
                 btn.innerText = "Daftar & Ambil QR";
                 btn.disabled = false;
                 return;
@@ -55,7 +55,7 @@ if (registerForm) {
 
             // 3. Simpan ke Firebase
             await addDoc(collection(db, dbCollection), {
-                nama, nomorId, email, hp,
+                nama, nomorTiket, email, hp,
                 code: randomCode,
                 createdAt: new Date()
             });
