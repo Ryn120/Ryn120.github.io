@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="active">Data Peserta</a>
+        <a href="scan.html">Scan QR</a>
+    </nav>
+
+    <div class="container">
+        <h2>Database Peserta (Realtime)</h2>
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Cari nama/kode...">
+            <button id="btnSort">Urutkan A-Z</button>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <script type="module" src="script-admin.js"></script>
+</body>
+</html>
