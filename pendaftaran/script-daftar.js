@@ -66,22 +66,22 @@ if (registerForm) {
             document.getElementById('uniqueCode').innerText = randomCode;
 
             // Tambahkan baris ini setelah library QRCode men-generate gambar
-          new QRCode(document.getElementById("qrcode"), {
+            new QRCode(document.getElementById("qrcode"), {
               text: randomCode,
                width: 150,
               height: 150
 });
 
             // Logika Unduh Gambar
-          const downloadBtn = document.getElementById('downloadBtn');
-          downloadBtn.onclick = function() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.onclick = function() {
     // Ambil elemen gambar di dalam div qrcode
-          const qrImg = document.querySelector('#qrcode img');
-          if (qrImg) {
-              const link = document.createElement('a');
-              link.href = qrImg.src;
-              link.download = `QR-${randomCode}.png`;
-              link.click();
+            const qrImg = document.querySelector('#qrcode img');
+            if (qrImg) {
+                const link = document.createElement('a');
+                link.href = qrImg.src;
+                link.download = `QR-${randomCode}.png`;
+                link.click();
     } else {
         alert("Gambar belum siap, silakan tunggu.");
     }
