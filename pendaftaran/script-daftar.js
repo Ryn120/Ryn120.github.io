@@ -76,12 +76,12 @@ if (registerForm) {
             const downloadBtn = document.getElementById('downloadBtn');
             downloadBtn.onclick = function() {
     // Ambil elemen gambar di dalam div qrcode
-            const qrImg = document.querySelector('#qrcode img');
-            if (qrImg) {
-                const link = document.createElement('a');
-                link.href = qrImg.src;
-                link.download = `QR-${randomCode}.png`;
-                link.click();
+                const qrImg = document.querySelector('#qrcode img');
+                if (qrImg) {
+                    const link = document.createElement('a');
+                    link.href = qrImg.src;
+                    link.download = `QR-${randomCode}.png`;
+                    link.click();
     } else {
         alert("Gambar belum siap, silakan tunggu.");
     }
