@@ -28,7 +28,7 @@ if (registerForm) {
         btn.disabled = true;
 
         const nama = document.getElementById('nama').value;
-        const nomorId = document.getElementById('nomorTiket').value;
+        const nomorTiket = document.getElementById('nomorTiket').value;
         const email = document.getElementById('email').value;
         const hp = document.getElementById('hp').value;
 
