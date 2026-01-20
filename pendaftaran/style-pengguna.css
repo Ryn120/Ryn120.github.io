@@ -1,0 +1,168 @@
+/* =========================
+   RESET & BASE
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2f7, #dbeafe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: #1f2933;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  padding: 24px 20px 28px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+/* =========================
+   JUDUL
+========================= */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 1.15rem;
+}
+
+/* =========================
+   MENU AKSI
+========================= */
+#menuAksi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+#menuAksi button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+  transition: transform .15s, box-shadow .15s, background .15s;
+}
+
+#menuAksi button:last-child {
+  background: #0ea5e9;
+}
+
+#menuAksi button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.15);
+}
+
+/* =========================
+   FORM
+========================= */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input {
+  padding: 11px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: .95rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+}
+
+/* =========================
+   BUTTON FORM
+========================= */
+form button {
+  margin-top: 6px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+  transition: background .15s, transform .15s;
+}
+
+form button:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+form button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* =========================
+   HASIL QR
+========================= */
+#hasil {
+  margin-top: 10px;
+}
+
+#qrcode {
+  margin: 20px auto;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+#downloadQR {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: #16a34a;
+  color: white;
+  transition: background .15s, transform .15s;
+}
+
+#downloadQR:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 360px) {
+  .container {
+    padding: 18px 14px 22px;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+}
