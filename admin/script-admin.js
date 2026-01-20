@@ -30,25 +30,34 @@ if (tableBody) {
     });
 
     window.renderTable = (dataArray) => {
-        tableBody.innerHTML = '';
-        dataArray.forEach(user => {
-            tableBody.innerHTML += `
-                <tr>
-                    <td>${user.code}</td>
-                    <td>${user.nama}</td>
-                    <td>${user.email}</td>
-                    <td><button class="btn-delete" data-id="${user.id}">Hapus</button></td>
-                </tr>`;
-        });
+    tableBody.innerHTML = '';
+    dataArray.forEach(user => {
+        // Buat baris tabel dengan kolom div kosong untuk QR
+        let row = `
+            <tr>
+                <td><div id="qr-table-${user.code}"></div></td>
+                <td><b>${user.code}</b></td>
+                <td>${user.nama}</td>
+                <td><button class="btn-delete" data-id="${user.id}">Hapus</button></td>
+            </tr>`;
+        tableBody.innerHTML += row;
+    });
 
-        document.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.onclick = () => deleteUser(btn.dataset.id);
+    // Generate QR untuk setiap baris setelah HTML terpasang
+    dataArray.forEach(user => {
+        new QRCode(document.getElementById(`qr-table-${user.code}`), {
+            text: user.code,
+            width: 50,  // Ukuran kecil untuk tabel
+            height: 50
         });
-    };
+    });
 
-    const deleteUser = async (id) => {
-        if(confirm('Hapus data ini?')) await deleteDoc(doc(db, dbCollection, id));
-    };
+    // Re-bind tombol hapus
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.onclick = () => deleteUser(btn.dataset.id);
+    });
+};
+
 
     // Binding fungsi ke Window agar bisa dipanggil dari HTML (karena type="module")
     window.searchData = () => {
