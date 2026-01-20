@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Peserta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html">Daftar</a>
+        <a href="admin.html" class="active">Data Admin</a>
+        <a href="scan.html">Scan QR</a>
+    </nav>
+
+    <div class="container">
+        <h2>Data Peserta Tersimpan</h2>
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Cari nama/kode..." onkeyup="searchData()">
+            <button onclick="sortData()">Urutkan Nama (A-Z)</button>
+            <button onclick="clearAllData()" style="background-color: #d9534f;">Hapus Semua Data</button>
+        </div>
+        
+        <div class="table-responsive">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Kode Unik</th>
+                        <th>Nama</th>
+                        <th>Nomor ID</th>
+                        <th>Email</th>
+                        <th>No HP</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
