@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Pendaftaran Peserta</title>
+  <link rel="stylesheet" href="style.css"> <!-- CSS seragam -->
+</head>
+<body>
+  <div class="container">
+    <h1>Pendaftaran Peserta</h1>
+    <form id="daftarForm">
+      <label>Nama:
+        <input type="text" id="nama" placeholder="Masukkan Nama" required>
+      </label><br>
+      <label>Nomor Tiket:
+        <input type="text" id="nomorTiket" placeholder="Masukkan Nomor Tiket" required>
+      </label><br>
+      <label>Email:
+        <input type="email" id="email" placeholder="Masukkan Email" required>
+      </label><br>
+      <label>Nomor HP:
+        <input type="text" id="hp" placeholder="Masukkan Nomor HP" required>
+      </label><br>
+      <button type="submit">Daftar</button>
+    </form>
+    <!-- Area untuk menampilkan pesan sukses atau error -->
+    <div id="message"></div>
+    <!-- Area untuk menampilkan QR Code setelah pendaftaran sukses -->
+    <div id="qrCode" style="margin-top:20px;"></div>
+    <button id="downloadBtn" style="display:none;">Download QR</button>
+  </div>
+
+  <!-- Sertakan Firebase JS SDK (app & firestore) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <!-- Sertakan pustaka QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Skrip khusus untuk halaman ini -->
+  <script src="script-daftar.js"></script>
+</body>
+</html>

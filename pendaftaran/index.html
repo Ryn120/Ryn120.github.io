@@ -1,58 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pendaftaran & QR Tiket</title>
-
-<link rel="stylesheet" href="style-pengguna.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halaman Utama</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="container">
-
-    <h2>Menu Tiket</h2>
-
-    <!-- PILIHAN AKSI -->
-    <div id="menuAksi">
-        <button id="btnDaftar">Daftar Peserta</button>
-        <button id="btnLihat">Lihat / Unduh QR</button>
-    </div>
-
-    <!-- FORM DAFTAR -->
-    <form id="formDaftar" style="display:none;">
-        <h3>Pendaftaran</h3>
-        <input id="nama" placeholder="Nama Lengkap" required>
-        <input id="nomorTiket" placeholder="Nomor Tiket" required>
-        <input id="email" type="email" placeholder="Email" required>
-        <input id="hp" placeholder="Nomor HP" required>
-        <button type="submit">Daftar & Buat QR</button>
-    </form>
-
-    <!-- FORM CEK TIKET -->
-    <form id="formCek" style="display:none;">
-        <h3>Cek Tiket</h3>
-        <input id="cekTiket" placeholder="Nomor Tiket" required>
-        <button type="submit">Lanjut</button>
-    </form>
-
-    <!-- VERIFIKASI -->
-    <form id="formVerif" style="display:none;">
-        <input id="verifNama" placeholder="Nama Lengkap" required>
-        <input id="verifHp" placeholder="Nomor HP" required>
-        <button type="submit">Verifikasi</button>
-    </form>
-
-    <!-- HASIL -->
-    <div id="hasil" style="display:none; text-align:center;">
-        <h3>QR Tiket</h3>
-        <div id="qrcode"></div>
-        <button id="downloadQR">Unduh QR</button>
-    </div>
-
-</div>
-
-<script type="module" src="script.js"></script>
+  <div class="container">
+    <a href="daftar.html" class="btn">Daftar Peserta</a>
+    <a href="cek-qr.html" class="btn">Lihat / Unduh QR</a>
+  </div>
 </body>
 </html>
