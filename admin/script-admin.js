@@ -18,86 +18,110 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const dbCollection = "peserta";
 
-// --- LOGIKA TABEL DATA (index.html Admin) ---
 const tableBody = document.getElementById('tableBody');
 let globalData = [];
 
+// --- LOGIKA UTAMA ---
+
 if (tableBody) {
-    // Realtime Listener
+    // Mendengarkan perubahan data secara Realtime
     onSnapshot(query(collection(db, dbCollection)), (snapshot) => {
         globalData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderTable(globalData);
     });
 
     window.renderTable = (dataArray) => {
-    tableBody.innerHTML = '';
-    dataArray.forEach(user => {
-        // Buat baris tabel dengan kolom div kosong untuk QR
-        let row = `
-            <tr>
-                <td><div id="qr-table-${user.code}"></div></td>
-                <td><b>${user.code}</b></td>
-                <td>${user.nama}</td>
-                <td><button class="btn-delete" data-id="${user.id}">Hapus</button></td>
-            </tr>`;
-        tableBody.innerHTML += row;
-    });
-
-    // Generate QR untuk setiap baris setelah HTML terpasang
-    dataArray.forEach(user => {
-        new QRCode(document.getElementById(`qr-table-${user.code}`), {
-            text: user.code,
-            width: 50,  // Ukuran kecil untuk tabel
-            height: 50
+        tableBody.innerHTML = '';
+        dataArray.forEach(user => {
+            // Membuat baris tabel dengan semua field data
+            let row = `
+                <tr>
+                    <td style="text-align:center;">
+                        <div id="qr-table-${user.code}" class="qr-container"></div>
+                    </td>
+                    <td><b>${user.code}</b></td>
+                    <td>${user.nama}</td>
+                    <td>${user.nomorId || '-'}</td>
+                    <td>${user.email}</td>
+                    <td>${user.hp || '-'}</td>
+                    <td><button class="btn-delete" data-id="${user.id}">Hapus</button></td>
+                </tr>`;
+            tableBody.innerHTML += row;
         });
-    });
 
-    // Re-bind tombol hapus
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.onclick = () => deleteUser(btn.dataset.id);
-    });
-};
+        // Men-generate QR Code untuk setiap peserta di dalam tabel
+        dataArray.forEach(user => {
+            const qrElem = document.getElementById(`qr-table-${user.code}`);
+            if (qrElem) {
+                new QRCode(qrElem, {
+                    text: user.code,
+                    width: 60,
+                    height: 60
+                });
+            }
+        });
 
+        // Event listener untuk tombol hapus
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.onclick = async () => {
+                if(confirm('Hapus data ini secara permanen?')) {
+                    try {
+                        await deleteDoc(doc(db, dbCollection, btn.dataset.id));
+                    } catch (error) {
+                        alert("Gagal menghapus: " + error.message);
+                    }
+                }
+            };
+        });
+    };
 
-    // Binding fungsi ke Window agar bisa dipanggil dari HTML (karena type="module")
+    // Fungsi Pencarian Data
     window.searchData = () => {
         const term = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = globalData.filter(u => u.nama.toLowerCase().includes(term) || u.code.includes(term));
+        const filtered = globalData.filter(u => 
+            u.nama.toLowerCase().includes(term) || 
+            u.code.includes(term) ||
+            (u.nomorId && u.nomorId.includes(term))
+        );
         renderTable(filtered);
     };
 
+    // Fungsi Pengurutan A-Z
     window.sortData = () => {
         globalData.sort((a, b) => a.nama.localeCompare(b.nama));
         renderTable(globalData);
     };
 
-    // Hubungkan tombol di HTML ke fungsi ini
-    if(document.getElementById('btnSort')) document.getElementById('btnSort').onclick = window.sortData;
-    if(document.getElementById('searchInput')) document.getElementById('searchInput').onkeyup = window.searchData;
+    // Menghubungkan fungsi ke elemen HTML karena menggunakan type="module"
+    const btnSort = document.getElementById('btnSort');
+    const searchInput = document.getElementById('searchInput');
+    if(btnSort) btnSort.onclick = window.sortData;
+    if(searchInput) searchInput.onkeyup = window.searchData;
 }
 
-// --- LOGIKA SCANNER (scan.html Admin) ---
+// --- LOGIKA SCANNER ---
 const reader = document.getElementById('reader');
 if (reader) {
     const onScanSuccess = async (decodedText) => {
-        // Hentikan scan sementara
-        html5QrcodeScanner.clear();
-        
+        // Logika verifikasi QR Code di halaman scan.html
         const q = query(collection(db, dbCollection), where("code", "==", decodedText));
         const snap = await getDocs(q);
 
         if (!snap.empty) {
             const user = snap.docs[0].data();
-            document.getElementById('scanResult').style.display = 'block';
+            const resultDiv = document.getElementById('scanResult');
+            resultDiv.style.display = 'block';
             document.getElementById('resNama').innerText = user.nama;
             document.getElementById('resKode').innerText = user.code;
-            alert("✅ Valid: " + user.nama);
+            alert("✅ Data Valid: " + user.nama);
         } else {
             alert("❌ Data Tidak Ditemukan!");
-            location.reload();
         }
     };
 
-    const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-    html5QrcodeScanner.render(onScanSuccess);
+    // Periksa apakah library Html5QrcodeScanner tersedia sebelum inisialisasi
+    if (typeof Html5QrcodeScanner !== 'undefined') {
+        const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    }
 }

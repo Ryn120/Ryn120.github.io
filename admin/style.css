@@ -1,36 +1,188 @@
-body { font-family: sans-serif; margin: 0; background: #f4f4f9; }
-nav { background: #333; padding: 15px; text-align: center; }
-nav a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; }
-nav a.active { color: #4CAF50; border-bottom: 2px solid #4CAF50; }
+/* --- Root Variables untuk Konsistensi Warna --- */
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #27ae60;
+    --danger-color: #e74c3c;
+    --bg-light: #f4f7f6;
+    --white: #ffffff;
+}
 
-.container { max-width: 800px; margin: 30px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-h2 { text-align: center; color: #333; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: var(--bg-light);
+    color: #333;
+}
 
-/* Form Styles */
-input { width: 95%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
-button { width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;}
-button:hover { background: #45a049; }
+/* --- Navigasi Modern --- */
+nav {
+    background: var(--primary-color);
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-/* Table Styles */
-.table-responsive { overflow-x: auto; margin-top: 20px; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-th { background-color: #333; color: white; }
-.btn-delete { background: #d9534f; padding: 5px 10px; width: auto; font-size: 12px; }
+nav a {
+    color: #bdc3c7;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
 
-/* QR Result */
-#qrcode { display: flex; justify-content: center; margin-top: 15px; }
-.controls { display: flex; gap: 10px; margin-bottom: 15px; }
+nav a:hover, nav a.active {
+    color: var(--white);
+    background: rgba(255,255,255,0.1);
+}
 
-/* Ukuran QR di dalam tabel agar pas */
-#tableBody div img {
-    margin: auto;
+nav a.active {
+    border-bottom: 2px solid var(--accent-color);
+    border-radius: 0;
+}
+
+/* --- Container Utama --- */
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 20px;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--bg-light);
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+/* --- Kontrol (Search & Sort) --- */
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+#searchInput {
+    flex: 1;
+    min-width: 250px;
+    padding: 12px;
     border: 1px solid #ddd;
-    padding: 2px;
-    background: #fff;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+#searchInput:focus {
+    border-color: var(--accent-color);
+}
+
+#btnSort {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#btnSort:hover {
+    background-color: #34495e;
+}
+
+/* --- Tabel Responsif --- */
+.table-responsive {
+    overflow-x: auto; /* Memungkinkan scroll horizontal di HP */
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    min-width: 800px; /* Memastikan tabel tidak terlalu gepeng */
+}
+
+thead {
+    background-color: #f8f9fa;
+}
+
+th {
+    padding: 15px;
+    text-align: left;
+    color: var(--primary-color);
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
 }
 
 td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f1f1;
     vertical-align: middle;
+    font-size: 0.95rem;
 }
 
+tr:hover {
+    background-color: #fafafa;
+}
+
+/* --- Styling QR Code dalam Tabel --- */
+.qr-container {
+    display: inline-block;
+    padding: 5px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.qr-container canvas, .qr-container img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* --- Tombol Hapus --- */
+.btn-delete {
+    background-color: #fff;
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* --- Scanner View (scan.html) --- */
+#reader {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #eee !important;
+}
+
+#scanResult {
+    background-color: #f0fff4;
+}
+
+/* --- Media Queries untuk Mobile --- */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+}

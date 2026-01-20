@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin</title>
+    <title>Panel Admin - Database Peserta</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,20 +16,24 @@
     <div class="container">
         <h2>Database Peserta (Realtime)</h2>
         <div class="controls">
-            <input type="text" id="searchInput" placeholder="Cari nama/kode...">
-            <button id="btnSort">Urutkan A-Z</button>
+            <input type="text" id="searchInput" placeholder="Cari nama/kode..." onkeyup="searchData()">
+            <button id="btnSort" onclick="sortData()">Urutkan A-Z</button>
         </div>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
+                        <th>QR Code</th>
                         <th>Kode</th>
                         <th>Nama</th>
+                        <th>Nomor ID</th>
                         <th>Email</th>
+                        <th>No HP</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody"></tbody>
+                <tbody id="tableBody">
+                    </tbody>
             </table>
         </div>
     </div>
