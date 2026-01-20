@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scan QR</title>
+    <title>Scan QR - Admin</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
@@ -14,17 +14,16 @@
     </nav>
 
     <div class="container">
-        <h2>Scan QR Code</h2>
+        <h2>Scanner Validasi</h2>
         <div id="reader" style="width: 100%; max-width: 500px; margin: auto;"></div>
         
         <div id="scanResult" style="display: none; margin-top: 20px; padding: 15px; border: 2px solid #28a745; border-radius: 8px;">
-            <h3>Data Ditemukan! ✅</h3>
+            <h3>Data Cocok! ✅</h3>
             <p><strong>Nama:</strong> <span id="resNama"></span></p>
             <p><strong>Kode:</strong> <span id="resKode"></span></p>
-            <p><strong>Status:</strong> Terverifikasi</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script-admin.js"></script>
 </body>
 </html>
