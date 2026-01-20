@@ -21,3 +21,16 @@ th { background-color: #333; color: white; }
 /* QR Result */
 #qrcode { display: flex; justify-content: center; margin-top: 15px; }
 .controls { display: flex; gap: 10px; margin-bottom: 15px; }
+
+/* Ukuran QR di dalam tabel agar pas */
+#tableBody div img {
+    margin: auto;
+    border: 1px solid #ddd;
+    padding: 2px;
+    background: #fff;
+}
+
+td {
+    vertical-align: middle;
+}
+
