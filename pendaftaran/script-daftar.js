@@ -37,7 +37,7 @@ if (registerForm) {
             const q = query(collection(db, dbCollection), 
                 or(
                     where("email", "==", email),
-                    where("nomorTiket", "==", nomorId),
+                    where("nomorTiket", "==", nomorTiket),
                     where("hp", "==", hp)
                 )
             );
