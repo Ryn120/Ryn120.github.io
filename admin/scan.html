@@ -3,57 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scan QR - Admin</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Scanner library -->
+    <title>Scanner QR - Admin</title>
+    <link rel="stylesheet" href="../style.css">
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        .scanner-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .scanner-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .scanner-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .scanner-instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .scan-result {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn-back {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        
+        .status-valid {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .status-invalid {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .loading-scanner {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <a href="index.html">📊 Data Peserta</a>
-        <a href="scan.html" class="active">📱 Scan QR</a>
-    </nav>
+    <div class="loading-overlay" id="loadingOverlay" style="display: flex;">
+        <div class="spinner"></div>
+        <p>Menyiapkan scanner...</p>
+    </div>
 
-    <div class="container">
-        <h2>🔍 Scanner QR Code</h2>
-        
-        <div style="text-align: center; margin-bottom: 20px; color: #666;">
-            <p>Arahkan kamera ke QR Code peserta untuk validasi</p>
+    <div class="scanner-container">
+        <div class="scanner-header">
+            <h1>🔍 Scanner Validasi Tiket</h1>
+            <p>Scan QR Code peserta untuk memvalidasi kehadiran</p>
+            <a href="index.html" class="btn-back">← Kembali ke Dashboard</a>
         </div>
         
-        <div id="reader" style="width: 100%; max-width: 500px; margin: 20px auto; min-height: 400px;">
-            <div style="text-align: center; padding: 50px; color: #666;">
-                <div style="font-size: 48px; margin-bottom: 20px;">📱</div>
-                <p>Menyiapkan scanner...</p>
-                <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto;"></div>
+        <div class="scanner-box">
+            <div id="reader">
+                <div class="loading-scanner">
+                    <div class="spinner" style="width: 40px; height: 40px;"></div>
+                    <p>Menginisialisasi scanner...</p>
+                    <p style="font-size: 14px; color: #999;">Pastikan kamera diizinkan</p>
+                </div>
             </div>
         </div>
         
-        <div id="scanResult" style="display: none; margin: 30px auto; max-width: 500px;"></div>
-        
-        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-            <h4>📝 Cara Penggunaan:</h4>
-            <ol style="text-align: left; display: inline-block; margin: 10px 0;">
-                <li>Izinkan akses kamera ketika diminta</li>
+        <div class="scanner-instructions">
+            <h3>📝 Petunjuk Penggunaan:</h3>
+            <ol>
+                <li>Izinkan akses kamera saat browser meminta</li>
                 <li>Arahkan kamera ke QR Code peserta</li>
-                <li>Pastikan QR Code berada dalam kotak scanner</li>
-                <li>Tunggu hingga terdeteksi otomatis</li>
+                <li>Pastikan QR Code berada dalam area scanner</li>
+                <li>Scanner akan bekerja secara otomatis</li>
+                <li>Hasil validasi akan muncul di bawah</li>
             </ol>
+            <p><strong>Catatan:</strong> QR Code yang valid akan menampilkan data peserta.</p>
         </div>
+        
+        <div id="scanResult" class="scan-result">
+            <!-- Hasil scan akan muncul di sini -->
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #666; font-size: 14px;">
+                <strong>Tips:</strong> Gunakan lingkungan dengan pencahayaan cukup untuk hasil scan optimal
+            </p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
     </div>
 
     <script type="module" src="script-admin.js"></script>
     
-    <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    <script>
+        // Hide loading after scanner is ready
+        setTimeout(() => {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }, 2000);
         
-        #reader video {
-            border-radius: 10px;
-            border: 2px solid #ddd;
+        // Check for camera permission
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(() => {
+                    console.log('Camera access granted');
+                })
+                .catch((error) => {
+                    console.warn('Camera access denied:', error);
+                    document.getElementById('reader').innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #dc3545;">
+                            <h3>⚠️ Akses Kamera Ditolak</h3>
+                            <p>Silakan izinkan akses kamera untuk menggunakan scanner.</p>
+                            <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 10px;">
+                                🔄 Coba Lagi
+                            </button>
+                        </div>
+                    `;
+                });
         }
-    </style>
+    </script>
 </body>
 </html>

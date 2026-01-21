@@ -3,198 +3,407 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin - Database Peserta</title>
-    <!-- Load QRCode library with fallback -->
+    <title>Admin Panel - Database Peserta</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Firebase fallback jika CDN tidak tersedia -->
-    <script>
-        // Firebase fallback loader
-        window.firebaseLoaded = false;
-        
-        function loadFirebaseWithFallback() {
-            const firebaseScript = document.createElement('script');
-            firebaseScript.src = 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-            firebaseScript.onload = function() {
-                console.log('Firebase App loaded');
-                // Load Firestore
-                const firestoreScript = document.createElement('script');
-                firestoreScript.src = 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-                firestoreScript.onload = function() {
-                    console.log('Firebase Firestore loaded');
-                    window.firebaseLoaded = true;
-                };
-                firestoreScript.onerror = function() {
-                    console.error('Failed to load Firebase Firestore');
-                    showFirebaseError();
-                };
-                document.head.appendChild(firestoreScript);
-            };
-            firebaseScript.onerror = function() {
-                console.error('Failed to load Firebase App');
-                showFirebaseError();
-            };
-            document.head.appendChild(firebaseScript);
-        }
-        
-        function showFirebaseError() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingOverlay) {
-                loadingOverlay.innerHTML = `
-                    <div style="text-align: center; padding: 30px;">
-                        <div style="font-size: 48px; color: #dc3545; margin-bottom: 20px;">⚠️</div>
-                        <h3>Gagal Memuat Firebase</h3>
-                        <p>Tidak dapat terhubung ke database. Kemungkinan penyebab:</p>
-                        <ul style="text-align: left; display: inline-block; margin: 20px 0;">
-                            <li>Koneksi internet terputus</li>
-                            <li>Firebase CDN terblokir</li>
-                            <li>Ad blocker aktif</li>
-                        </ul>
-                        <div style="margin-top: 20px;">
-                            <button onclick="location.reload()" style="padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                                🔄 Refresh
-                            </button>
-                            <button onclick="showDemoData()" style="padding: 10px 20px; margin: 5px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                                👁️ Tampilkan Data Demo
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        
-        function showDemoData() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const tableBody = document.getElementById('tableBody');
-            
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-            if (tableBody) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
-                            <div style="font-size: 2em; margin-bottom: 10px;">🔧</div>
-                            <h3>Mode Demo</h3>
-                            <p>Firebase tidak tersedia. Berikut data contoh:</p>
-                            <div style="max-width: 500px; margin: 20px auto; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-                                <p><strong>Kode:</strong> DEMO001</p>
-                                <p><strong>Nama:</strong> John Doe</p>
-                                <p><strong>Email:</strong> demo@example.com</p>
-                                <p><strong>Status:</strong> ❌ Koneksi database terputus</p>
-                            </div>
-                            <p style="margin-top: 20px; color: #999;">
-                                <i>Hubungkan ke internet untuk melihat data asli</i>
-                            </p>
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-        
-        // Load Firebase saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', loadFirebaseWithFallback);
-    </script>
-</head>
-<body>
-    <nav>
-        <a href="index.html" class="active">📊 Data Peserta</a>
-        <a href="scan.html">📱 Scan QR</a>
-    </nav>
-
-    <div class="container">
-        <h2>Database Peserta (Realtime)</h2>
-        <div class="controls">
-            <input type="text" id="searchInput" placeholder="🔍 Cari nama/kode..." onkeyup="searchData()">
-            <button id="btnSort" onclick="sortData()">📊 Urutkan A-Z</button>
-        </div>
-        
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>QR Code</th>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>Nomor Tiket</th>
-                        <th>Email</th>
-                        <th>No HP</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Data akan diisi oleh JavaScript -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
-        <div style="width: 60px; height: 60px; border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <p style="margin-top: 20px; font-weight: 500; color: #333;">Memuat data peserta...</p>
-        <p id="loadingStatus" style="margin-top: 10px; color: #666; font-size: 0.9em;">Menyiapkan aplikasi...</p>
-        <button onclick="location.reload()" style="margin-top: 20px; padding: 8px 16px; background: transparent; color: #666; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; display: none;" id="reloadButton">
-            ⏳ Loading...
-        </button>
-    </div>
-
-    <!-- Notification Toast -->
-    <div id="toast" style="position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 16px 24px; border-radius: 8px; z-index: 1000; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-        <span id="toastMessage"></span>
-    </div>
-
-    <script type="module" src="script-admin.js"></script>
-    
+    <link rel="stylesheet" href="../style.css">
     <style>
+        /* Admin-specific styles */
+        .admin-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-admin {
+            padding: 8px 16px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-admin:hover {
+            background: #34495e;
+        }
+        
+        .btn-admin.scan {
+            background: #27ae60;
+        }
+        
+        .btn-admin.scan:hover {
+            background: #2ecc71;
+        }
+        
+        .btn-admin.export {
+            background: #3498db;
+        }
+        
+        .btn-admin.export:hover {
+            background: #2980b9;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .table-controls {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .search-box:before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .action-btn.sort {
+            background: #f1c40f;
+            color: #333;
+        }
+        
+        .action-btn.export {
+            background: #3498db;
+            color: white;
+        }
+        
+        .action-btn.delete-all {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: #34495e;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70px;
+        }
+        
+        .action-cell {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn-action {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .btn-action.delete {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-action.edit {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-action.view {
+            background: #27ae60;
+            color: white;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
         
-        .qr-container {
-            min-height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .admin-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .table-controls {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
         }
     </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Memuat data peserta...</p>
+        <p id="loadingStatus" style="margin-top: 10px; color: #666; font-size: 14px;">Menyiapkan dashboard admin</p>
+    </div>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <div class="admin-title">
+                <h1>📊 Dashboard Admin</h1>
+                <span style="color: #7f8c8d; font-size: 14px;">Sistem Manajemen Peserta</span>
+            </div>
+            <div class="admin-actions">
+                <a href="scan.html" class="btn-admin scan">📱 Scan QR</a>
+                <a href="../index.html" class="btn-admin">🏠 Ke Halaman Utama</a>
+            </div>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Peserta</div>
+                <div class="stat-number" id="totalPeserta">0</div>
+                <div class="stat-label">Terdaftar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Hari Ini</div>
+                <div class="stat-number" id="pesertaHariIni">0</div>
+                <div class="stat-label">Pendaftar Baru</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Status</div>
+                <div class="stat-number" id="statusSistem">✅</div>
+                <div class="stat-label">Sistem Aktif</div>
+            </div>
+        </div>
+        
+        <div class="table-controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cari nama, kode, email, atau nomor tiket...">
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn sort" id="btnSort">📊 Urutkan A-Z</button>
+                <button class="action-btn export" onclick="exportToCSV()">📥 Export CSV</button>
+                <button class="action-btn delete-all" onclick="confirmDeleteAll()" style="display: none;">🗑️ Hapus Semua</button>
+            </div>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="100">QR Code</th>
+                        <th width="150">Kode Unik</th>
+                        <th>Nama Peserta</th>
+                        <th width="120">No. Tiket</th>
+                        <th>Email</th>
+                        <th width="120">No. HP</th>
+                        <th width="150">Tanggal Daftar</th>
+                        <th width="100">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data akan dimuat di sini -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center; color: #7f8c8d; font-size: 14px;">
+            <p>© 2024 Sistem Manajemen Peserta. Data diperbarui secara realtime.</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script type="module" src="script-admin.js"></script>
     
     <script>
-        // Debug info
-        console.log('Page loaded at:', new Date().toLocaleTimeString());
+        // Update stats
+        function updateStats(data) {
+            document.getElementById('totalPeserta').textContent = data.length;
+            
+            // Hitung pendaftar hari ini
+            const today = new Date().toDateString();
+            const todayCount = data.filter(p => {
+                const regDate = new Date(p.createdAt).toDateString();
+                return regDate === today;
+            }).length;
+            
+            document.getElementById('pesertaHariIni').textContent = todayCount;
+        }
         
-        // Update loading status
-        setTimeout(() => {
-            const loadingStatus = document.getElementById('loadingStatus');
-            const reloadButton = document.getElementById('reloadButton');
-            
-            if (loadingStatus) {
-                loadingStatus.textContent = 'Menghubungkan ke database...';
-            }
-            
-            // Show reload button after 5 seconds
-            setTimeout(() => {
-                if (reloadButton && document.getElementById('loadingOverlay').style.display !== 'none') {
-                    reloadButton.style.display = 'block';
-                    reloadButton.innerHTML = '🔄 Refresh Halaman';
-                    reloadButton.onclick = function() {
-                        this.innerHTML = '⏳ Refreshing...';
-                        this.disabled = true;
-                        location.reload();
-                    };
+        // Confirm delete all (disabled by default for safety)
+        function confirmDeleteAll() {
+            if (confirm('PERINGATAN: Anda akan menghapus SEMUA data peserta! Tindakan ini tidak dapat dibatalkan.\n\nKetik "HAPUS SEMUA" untuk konfirmasi:')) {
+                const confirmation = prompt('Ketik "HAPUS SEMUA" untuk konfirmasi:');
+                if (confirmation === 'HAPUS SEMUA') {
+                    showToast('Fitur ini dinonaktifkan untuk keamanan.', 'warning');
                 }
-            }, 5000);
-        }, 2000);
-        
-        // Check if QRCode library is loaded
-        setTimeout(() => {
-            if (typeof QRCode === 'undefined') {
-                console.warn('QRCode library not loaded, retrying...');
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
-                document.head.appendChild(script);
             }
-        }, 1000);
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Admin page initialized');
+        });
     </script>
 </body>
 </html>
