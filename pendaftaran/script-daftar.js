@@ -48,7 +48,7 @@ document.getElementById("daftarForm").addEventListener("submit", async function(
       nomorTiket: nomorTiket,
       email: email,
       hp: hp,
-      kodeUnik: kodeUnik
+      code: code
     });
 
     // Tampilkan pesan sukses
@@ -59,7 +59,7 @@ document.getElementById("daftarForm").addEventListener("submit", async function(
     // Hapus QR lama jika ada
     qrContainer.innerHTML = "";
     new QRCode(qrContainer, {
-      text: kodeUnik,
+      text: code,
       width: 200,
       height: 200
     });
@@ -75,7 +75,7 @@ document.getElementById("daftarForm").addEventListener("submit", async function(
         var imgSrc = imgTag.src;
         var a = document.createElement('a');
         a.href = imgSrc;
-        a.download = 'kode-tiket.png';
+        a.download = 'code-tiket.png';
         a.click();
       } else {
         // Jika menggunakan <canvas>, konversi ke data URL
@@ -83,7 +83,7 @@ document.getElementById("daftarForm").addEventListener("submit", async function(
         var imgSrc = canvas.toDataURL("image/png");
         var a = document.createElement('a');
         a.href = imgSrc;
-        a.download = 'kode-tiket.png';
+        a.download = 'code-tiket.png';
         a.click();
       }
     };
