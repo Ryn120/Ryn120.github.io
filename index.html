@@ -1,15 +1,54 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halaman Utama</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Tiket QR</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <a href="daftar.html" class="btn">Daftar Peserta</a>
-    <a href="cek-qr.html" class="btn">Lihat / Unduh QR</a>
-  </div>
+    <div class="container fade-in">
+        <h1>🎫 Sistem Tiket QR Code</h1>
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <div style="font-size: 60px; margin-bottom: 20px;">
+                🎪
+            </div>
+            <h2>Selamat Datang!</h2>
+            <p style="color: #666; margin: 20px 0;">
+                Sistem pendaftaran dan validasi tiket menggunakan QR Code.
+            </p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 40px 0;">
+            <a href="daftar.html" class="btn" style="text-align: center; padding: 30px; background: #3498db;">
+                <div style="font-size: 40px; margin-bottom: 15px;">📝</div>
+                <h3>Daftar Peserta</h3>
+                <p style="font-size: 14px; margin-top: 10px;">Registrasi peserta baru</p>
+            </a>
+            
+            <a href="cek-qr.html" class="btn" style="text-align: center; padding: 30px; background: #2ecc71;">
+                <div style="font-size: 40px; margin-bottom: 15px;">🔍</div>
+                <h3>Cek & Download QR</h3>
+                <p style="font-size: 14px; margin-top: 10px;">Lihat dan download QR Code</p>
+            </a>
+            
+            <a href="admin/index.html" class="btn" style="text-align: center; padding: 30px; background: #e74c3c;">
+                <div style="font-size: 40px; margin-bottom: 15px;">⚙️</div>
+                <h3>Panel Admin</h3>
+                <p style="font-size: 14px; margin-top: 10px;">Kelola data peserta</p>
+            </a>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h4>📋 Informasi Sistem:</h4>
+            <ul style="margin: 15px 0; padding-left: 20px;">
+                <li>Setiap peserta mendapatkan kode unik 8 digit</li>
+                <li>QR Code dibuat dari kode unik tersebut</li>
+                <li>Data tersimpan secara realtime di database</li>
+                <li>Validasi tiket menggunakan scanner QR Code</li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>

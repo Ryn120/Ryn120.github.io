@@ -1,4 +1,6 @@
-// Firebase configuration (sama dengan pendaftaran)
+// ======================
+// KONFIGURASI FIREBASE
+// ======================
 const firebaseConfig = {
     apiKey: "AIzaSyDCEU9nyFJi-eSy0Uq3ysXbQlV7Ri4x-Gs",
     authDomain: "qr-generet01.firebaseapp.com",
@@ -8,60 +10,68 @@ const firebaseConfig = {
     appId: "1:753131681292:web:d7622e7188ba1395e8a029"
 };
 
-// Initialize Firebase
+// Inisialisasi Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 let ticketData = null;
 
-// Handle ticket search
+// ======================
+// CARI TIKET
+// ======================
 document.getElementById("cekForm").addEventListener("submit", async function(e) {
     e.preventDefault();
     
-    const noTiket = document.getElementById('cekNomorTiket').value.trim();
-    const message = document.getElementById('messageCek');
+    const noTiket = document.getElementById("cekNomorTiket").value.trim();
+    const message = document.getElementById("messageCek");
     message.innerHTML = "";
     message.className = "";
     
-    document.getElementById('verifikasiForm').style.display = "none";
-    document.getElementById('qrCode').innerHTML = "";
-    document.getElementById('downloadBtn').style.display = "none";
+    // Reset tampilan
+    document.getElementById("verifikasiForm").style.display = "none";
+    document.getElementById("hasilVerifikasi").style.display = "none";
+    document.getElementById("qrCode").innerHTML = "";
     ticketData = null;
-
+    
     if (!noTiket) {
         message.innerHTML = "❌ Masukkan nomor tiket terlebih dahulu!";
         message.className = "message-error";
         return;
     }
-
+    
     try {
         message.innerHTML = "🔍 Mencari tiket...";
         message.className = "message-info";
-
-        // Cari berdasarkan nomorTiket
-        const snap = await db.collection('peserta').where('nomorTiket', '==', noTiket).get();
         
-        if (snap.empty) {
+        // Cari berdasarkan nomorTiket
+        const snapshot = await db.collection("peserta")
+            .where("nomorTiket", "==", noTiket)
+            .get();
+        
+        if (snapshot.empty) {
             message.innerHTML = "❌ Tiket tidak ditemukan!";
             message.className = "message-error";
             return;
         }
         
-        // Ambil data
-        const doc = snap.docs[0];
+        // Ambil data tiket
+        const doc = snapshot.docs[0];
         ticketData = {
-            ...doc.data(),
-            id: doc.id
+            id: doc.id,
+            ...doc.data()
         };
-
-        // Tampilkan form verifikasi
-        document.getElementById('verifikasiForm').style.display = "block";
-        document.getElementById('namaCek').value = "";
-        document.getElementById('hpCek').value = "";
         
-        message.innerHTML = "✅ Tiket ditemukan. Silakan verifikasi data Anda.";
+        // Tampilkan form verifikasi
+        document.getElementById("verifikasiForm").style.display = "block";
+        document.getElementById("namaCek").value = "";
+        document.getElementById("hpCek").value = "";
+        
+        message.innerHTML = "✅ Tiket ditemukan! Verifikasi data Anda.";
         message.className = "message-success";
-
+        
+        // Scroll ke form verifikasi
+        document.getElementById("verifikasiForm").scrollIntoView({ behavior: 'smooth' });
+        
     } catch (error) {
         console.error("Error:", error);
         message.innerHTML = "❌ Error: " + error.message;
@@ -69,59 +79,63 @@ document.getElementById("cekForm").addEventListener("submit", async function(e) 
     }
 });
 
-// Handle verification
+// ======================
+// VERIFIKASI DATA
+// ======================
 document.getElementById("verifBtn").addEventListener("click", function() {
     if (!ticketData) return;
     
-    const namaInput = document.getElementById('namaCek').value.trim();
-    const hpInput = document.getElementById('hpCek').value.trim();
-    const message = document.getElementById('messageCek');
-
+    const namaInput = document.getElementById("namaCek").value.trim();
+    const hpInput = document.getElementById("hpCek").value.trim();
+    const message = document.getElementById("messageCek");
+    
     // Validasi input
     if (!namaInput || !hpInput) {
-        message.innerHTML = "❌ Harap isi nama dan nomor HP untuk verifikasi!";
+        message.innerHTML = "❌ Harap isi nama dan nomor HP!";
         message.className = "message-error";
         return;
     }
-
-    // Cocokkan data - case insensitive dan trim spasi
+    
+    // Cocokkan data (case insensitive untuk nama)
     if (namaInput.toLowerCase() === ticketData.nama.toLowerCase() && 
-        hpInput.trim() === ticketData.hp.trim()) {
+        hpInput === ticketData.hp) {
         
-        // VERIFIKASI BERHASIL
+        // Verifikasi berhasil
+        document.getElementById("hasilVerifikasi").style.display = "block";
+        
+        // Generate QR Code dari code 8 digit
         const qrContainer = document.getElementById("qrCode");
         qrContainer.innerHTML = "";
         
-        // PASTIKAN menggunakan code yang sama dengan yang disimpan!
-        const qrCode = ticketData.code || ticketData.id;
-        
-        // Generate QR Code
         new QRCode(qrContainer, {
-            text: qrCode,
-            width: 200,
-            height: 200,
+            text: ticketData.code, // Gunakan code 8 digit
+            width: 250,
+            height: 250,
             colorDark: "#2c3e50",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
         
-        // Tampilkan tombol download
-        const downloadBtn = document.getElementById("downloadBtn");
-        downloadBtn.style.display = "inline";
-        downloadBtn.onclick = function() {
-            downloadQRCode(qrContainer, ticketData.nama, qrCode, ticketData.nomorTiket);
+        // Setup download button
+        document.getElementById("downloadBtn").onclick = function() {
+            downloadQRCode(qrContainer, ticketData.nama, ticketData.code, ticketData.nomorTiket);
         };
         
-        message.innerHTML = "✅ Verifikasi berhasil! QR Code Anda siap.";
+        message.innerHTML = "✅ Verifikasi berhasil! QR Code ditampilkan.";
         message.className = "message-success";
         
+        // Scroll ke hasil
+        document.getElementById("hasilVerifikasi").scrollIntoView({ behavior: 'smooth' });
+        
     } else {
-        message.innerHTML = "❌ Nama atau Nomor HP tidak cocok!";
+        message.innerHTML = "❌ Nama atau nomor HP tidak cocok!";
         message.className = "message-error";
     }
 });
 
-// Fungsi download QR Code yang SAMA dengan halaman daftar
+// ======================
+// FUNGSI DOWNLOAD QR CODE
+// ======================
 function downloadQRCode(qrContainer, nama, code, nomorTiket) {
     const canvas = qrContainer.querySelector("canvas");
     
@@ -129,13 +143,13 @@ function downloadQRCode(qrContainer, nama, code, nomorTiket) {
         alert("QR Code belum siap. Tunggu sebentar.");
         return;
     }
-
-    // Buat canvas baru dengan ukuran lebih besar
+    
+    // Buat canvas baru dengan background putih
     const newCanvas = document.createElement("canvas");
     const size = 500;
     newCanvas.width = size;
-    newCanvas.height = size + 80;
-
+    newCanvas.height = size + 100;
+    
     const ctx = newCanvas.getContext("2d");
     
     // Background putih
@@ -149,23 +163,23 @@ function downloadQRCode(qrContainer, nama, code, nomorTiket) {
     
     ctx.drawImage(canvas, qrX, qrY, qrSize, qrSize);
     
-    // Tambahkan informasi teks
+    // Tambahkan teks informasi
     ctx.fillStyle = "#2c3e50";
-    ctx.font = "bold 24px Arial";
+    ctx.font = "bold 28px Arial";
     ctx.textAlign = "center";
     ctx.fillText("TIKET PESERTA", size / 2, 30);
     
-    ctx.font = "18px Arial";
-    ctx.fillText(nama, size / 2, size + 40);
+    ctx.font = "22px Arial";
+    ctx.fillText(nama, size / 2, size + 50);
     
-    ctx.font = "16px Arial";
+    ctx.font = "18px Arial";
     ctx.fillStyle = "#666";
-    ctx.fillText(`Kode: ${code} | Tiket: ${nomorTiket}`, size / 2, size + 65);
+    ctx.fillText(`Kode: ${code} | Tiket: ${nomorTiket}`, size / 2, size + 80);
     
     // Border
     ctx.strokeStyle = "#ddd";
     ctx.lineWidth = 2;
-    ctx.strokeRect(10, 10, size - 20, size + 60);
+    ctx.strokeRect(10, 10, size - 20, size + 80);
     
     // Download
     const link = document.createElement("a");
@@ -176,7 +190,9 @@ function downloadQRCode(qrContainer, nama, code, nomorTiket) {
     document.body.removeChild(link);
 }
 
-// Auto-focus
+// ======================
+// AUTO FOCUS
+// ======================
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('cekNomorTiket').focus();
 });

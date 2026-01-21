@@ -1,42 +1,66 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Form Pendaftaran Peserta</title>
-  <link rel="stylesheet" href="style.css"> <!-- CSS seragam -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pendaftaran Peserta</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Pendaftaran Peserta</h1>
-    <form id="daftarForm">
-      <label>Nama:
-        <input type="text" id="nama" placeholder="Masukkan Nama" required>
-      </label><br>
-      <label>Nomor Tiket:
-        <input type="number" id="nomorTiket" placeholder="Masukkan Nomor Tiket" required>
-      </label><br>
-      <label>Email:
-        <input type="email" id="email" placeholder="Masukkan Email" required>
-      </label><br>
-      <label>Nomor HP:
-        <input type="tel" id="hp" placeholder="Masukkan Nomor HP" required>
-      </label><br>
-      <button type="submit">Daftar</button>
-    </form>
-    <!-- Area untuk menampilkan pesan sukses atau error -->
-    <div id="message"></div>
-    <!-- Area untuk menampilkan QR Code setelah pendaftaran sukses -->
-    <div id="qrCode" style="margin-top:20px;"></div>
-    <button id="downloadBtn" style="display:none;">Download QR</button>
-  </div>
+    <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="daftar.html" class="active">📝 Daftar</a>
+        <a href="cek-qr.html">🔍 Cek QR</a>
+        <a href="admin/index.html">⚙️ Admin</a>
+    </nav>
 
-  <!-- Sertakan Firebase JS SDK (app & firestore) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <!-- Sertakan pustaka QRCode.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Skrip khusus untuk halaman ini -->
-  <script src="script-daftar.js"></script>
+    <div class="container fade-in">
+        <h1>📝 Form Pendaftaran Peserta</h1>
+        
+        <form id="daftarForm">
+            <div>
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+            </div>
+            
+            <div>
+                <label for="nomorTiket">Nomor Tiket:</label>
+                <input type="text" id="nomorTiket" placeholder="Masukkan nomor tiket" required>
+                <small style="color: #666; display: block; margin-top: 5px;">* Nomor tiket yang Anda terima</small>
+            </div>
+            
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="contoh@email.com" required>
+            </div>
+            
+            <div>
+                <label for="hp">Nomor HP/WhatsApp:</label>
+                <input type="tel" id="hp" placeholder="08xxxxxxxxxx" required>
+            </div>
+            
+            <button type="submit">📋 Daftarkan Peserta</button>
+        </form>
+        
+        <div id="message"></div>
+        
+        <div id="hasilPendaftaran" style="display: none;">
+            <div style="background: #d4edda; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3 style="color: #155724;">✅ Pendaftaran Berhasil!</h3>
+                <p>Simpan kode berikut untuk keperluan check-in:</p>
+                <div style="background: white; padding: 15px; border-radius: 5px; margin: 10px 0; font-family: monospace; font-size: 24px; font-weight: bold; color: #2c3e50;" id="kodeUnikDisplay"></div>
+            </div>
+            
+            <div id="qrCode" style="margin: 30px 0;"></div>
+            
+            <button id="downloadBtn" style="background: #2ecc71;">📥 Download QR Code</button>
+            <a href="cek-qr.html" class="btn" style="background: #3498db; margin-left: 10px;">🔍 Cek Tiket Lainnya</a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="script-daftar.js"></script>
 </body>
 </html>
