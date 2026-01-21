@@ -40,7 +40,7 @@ document.getElementById("cekForm").addEventListener("submit", async function(e) 
     }
     
     try {
-        message.innerHTML = "🔍 Mencari tiket...";
+        message.innerHTML = '<div class="spinner"></div><p>Mencari tiket...</p>';
         message.className = "message-info";
         
         // Cari berdasarkan nomorTiket
@@ -49,7 +49,7 @@ document.getElementById("cekForm").addEventListener("submit", async function(e) 
             .get();
         
         if (snapshot.empty) {
-            message.innerHTML = "❌ Tiket tidak ditemukan!";
+            message.innerHTML = "❌ Tiket tidak ditemukan! Periksa kembali nomor tiket Anda.";
             message.className = "message-error";
             return;
         }
@@ -66,7 +66,7 @@ document.getElementById("cekForm").addEventListener("submit", async function(e) 
         document.getElementById("namaCek").value = "";
         document.getElementById("hpCek").value = "";
         
-        message.innerHTML = "✅ Tiket ditemukan! Verifikasi data Anda.";
+        message.innerHTML = "✅ Tiket ditemukan! Silakan verifikasi data Anda.";
         message.className = "message-success";
         
         // Scroll ke form verifikasi
@@ -191,8 +191,31 @@ function downloadQRCode(qrContainer, nama, code, nomorTiket) {
 }
 
 // ======================
-// AUTO FOCUS
+// AUTO FOCUS DAN ENTER KEY
 // ======================
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('cekNomorTiket').focus();
+    
+    // Enter key support untuk form pencarian
+    document.getElementById('cekNomorTiket').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('cekForm').dispatchEvent(new Event('submit'));
+        }
+    });
+    
+    // Enter key support untuk form verifikasi
+    document.getElementById('namaCek').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('verifBtn').click();
+        }
+    });
+    
+    document.getElementById('hpCek').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('verifBtn').click();
+        }
+    });
 });

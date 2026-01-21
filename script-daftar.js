@@ -51,8 +51,16 @@ document.getElementById("daftarForm").addEventListener("submit", async function(
         return;
     }
     
+    // Validasi email sederhana
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        messageDiv.textContent = "❌ Format email tidak valid!";
+        messageDiv.className = "message-error";
+        return;
+    }
+    
     // Tampilkan loading
-    messageDiv.textContent = "⏳ Memproses pendaftaran...";
+    messageDiv.innerHTML = '<div class="spinner"></div><p>Memproses pendaftaran...</p>';
     messageDiv.className = "message-info";
     
     try {
@@ -139,7 +147,7 @@ document.getElementById("daftarForm").addEventListener("submit", async function(
         // Reset form
         document.getElementById("daftarForm").reset();
         
-        messageDiv.textContent = "✅ Pendaftaran berhasil!";
+        messageDiv.textContent = "✅ Pendaftaran berhasil! Scroll ke bawah untuk melihat QR Code.";
         messageDiv.className = "message-success";
         
         // Scroll ke hasil

@@ -12,11 +12,14 @@
         <a href="index.html">🏠 Home</a>
         <a href="daftar.html" class="active">📝 Daftar</a>
         <a href="cek-qr.html">🔍 Cek QR</a>
-        <a href="admin/index.html">⚙️ Admin</a>
     </nav>
 
     <div class="container fade-in">
         <h1>📝 Form Pendaftaran Peserta</h1>
+        
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Daftarkan diri Anda untuk mendapatkan QR Code tiket.
+        </p>
         
         <form id="daftarForm">
             <div>
@@ -40,22 +43,35 @@
                 <input type="tel" id="hp" placeholder="08xxxxxxxxxx" required>
             </div>
             
-            <button type="submit">📋 Daftarkan Peserta</button>
+            <button type="submit" class="btn-success">📋 Daftarkan Peserta</button>
         </form>
         
         <div id="message"></div>
         
         <div id="hasilPendaftaran" style="display: none;">
-            <div style="background: #d4edda; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                <h3 style="color: #155724;">✅ Pendaftaran Berhasil!</h3>
-                <p>Simpan kode berikut untuk keperluan check-in:</p>
-                <div style="background: white; padding: 15px; border-radius: 5px; margin: 10px 0; font-family: monospace; font-size: 24px; font-weight: bold; color: #2c3e50;" id="kodeUnikDisplay"></div>
+            <div style="background: #d4edda; padding: 25px; border-radius: 10px; margin: 30px 0;">
+                <h3 style="color: #155724; text-align: center;">✅ Pendaftaran Berhasil!</h3>
+                <p style="text-align: center;">Simpan kode berikut untuk keperluan check-in:</p>
+                <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0; text-align: center;">
+                    <div style="font-family: monospace; font-size: 32px; font-weight: bold; color: #2c3e50; letter-spacing: 2px;" id="kodeUnikDisplay"></div>
+                    <p style="color: #666; margin-top: 10px;">Kode 8 digit unik Anda</p>
+                </div>
             </div>
             
-            <div id="qrCode" style="margin: 30px 0;"></div>
+            <div style="text-align: center;">
+                <h3>QR Code Tiket Anda</h3>
+                <p style="color: #666; margin-bottom: 20px;">Scan QR Code ini saat check-in</p>
+                <div id="qrCode"></div>
+            </div>
             
-            <button id="downloadBtn" style="background: #2ecc71;">📥 Download QR Code</button>
-            <a href="cek-qr.html" class="btn" style="background: #3498db; margin-left: 10px;">🔍 Cek Tiket Lainnya</a>
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="downloadBtn" class="btn-success" style="padding: 15px 30px; font-size: 18px;">
+                    📥 Download QR Code
+                </button>
+                <a href="cek-qr.html" class="btn" style="padding: 15px 30px; font-size: 18px; margin-left: 15px;">
+                    🔍 Cek Tiket Lainnya
+                </a>
+            </div>
         </div>
     </div>
 

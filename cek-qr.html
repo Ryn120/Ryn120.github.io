@@ -12,32 +12,32 @@
         <a href="index.html">🏠 Home</a>
         <a href="daftar.html">📝 Daftar</a>
         <a href="cek-qr.html" class="active">🔍 Cek QR</a>
-        <a href="admin/index.html">⚙️ Admin</a>
     </nav>
 
     <div class="container fade-in">
         <h1>🔍 Cek & Download QR Code</h1>
         
         <div style="margin-bottom: 30px; text-align: center;">
-            <p>Cari tiket Anda berdasarkan nomor tiket, lalu verifikasi dengan nama dan HP.</p>
+            <p>Cari tiket Anda berdasarkan nomor tiket, lalu verifikasi dengan nama dan HP untuk mengakses QR Code.</p>
         </div>
         
         <form id="cekForm">
             <div>
                 <label for="cekNomorTiket">Nomor Tiket:</label>
                 <input type="text" id="cekNomorTiket" placeholder="Masukkan nomor tiket Anda" required>
+                <small style="color: #666; display: block; margin-top: 5px;">* Masukkan nomor tiket yang Anda daftarkan</small>
             </div>
             
-            <button type="submit">🔍 Cari Tiket</button>
+            <button type="submit" class="btn-success">🔍 Cari Tiket</button>
         </form>
         
         <div id="messageCek"></div>
         
         <div id="verifikasiForm" style="display: none; margin-top: 30px;">
-            <h3>✅ Tiket Ditemukan!</h3>
-            <p style="margin-bottom: 20px;">Verifikasi data Anda untuk mengakses QR Code:</p>
-            
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 10px;">
+                <h3 style="text-align: center; color: #155724;">✅ Tiket Ditemukan!</h3>
+                <p style="text-align: center; margin-bottom: 20px;">Verifikasi data Anda untuk mengakses QR Code:</p>
+                
                 <div>
                     <label for="namaCek">Nama Lengkap:</label>
                     <input type="text" id="namaCek" placeholder="Masukkan nama sesuai pendaftaran" required>
@@ -49,19 +49,32 @@
                 </div>
             </div>
             
-            <button id="verifBtn" type="button">✅ Verifikasi Data</button>
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="verifBtn" type="button" class="btn-success" style="padding: 15px 30px;">
+                    ✅ Verifikasi Data
+                </button>
+            </div>
         </div>
         
         <div id="hasilVerifikasi" style="display: none; margin-top: 30px;">
-            <div style="background: #d4edda; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                <h3 style="color: #155724;">✅ Verifikasi Berhasil!</h3>
-                <p>QR Code tiket Anda:</p>
+            <div style="background: #d4edda; padding: 25px; border-radius: 10px; margin-bottom: 30px;">
+                <h3 style="color: #155724; text-align: center;">✅ Verifikasi Berhasil!</h3>
+                <p style="text-align: center;">QR Code tiket Anda siap untuk didownload:</p>
             </div>
             
-            <div id="qrCode"></div>
+            <div style="text-align: center;">
+                <h3>QR Code Tiket</h3>
+                <div id="qrCode"></div>
+            </div>
             
-            <button id="downloadBtn" style="background: #2ecc71; margin-right: 10px;">📥 Download QR Code</button>
-            <button onclick="location.reload()" style="background: #95a5a6;">🔄 Cari Tiket Lain</button>
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="downloadBtn" class="btn-success" style="padding: 15px 30px; margin-right: 15px;">
+                    📥 Download QR Code
+                </button>
+                <button onclick="location.reload()" class="btn" style="padding: 15px 30px;">
+                    🔄 Cari Tiket Lain
+                </button>
+            </div>
         </div>
     </div>
 

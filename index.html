@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <nav>
+        <a href="index.html" class="active">🏠 Home</a>
+        <a href="daftar.html">📝 Daftar</a>
+        <a href="cek-qr.html">🔍 Cek QR</a>
+    </nav>
+
     <div class="container fade-in">
         <h1>🎫 Sistem Tiket QR Code</h1>
         
@@ -15,8 +21,9 @@
                 🎪
             </div>
             <h2>Selamat Datang!</h2>
-            <p style="color: #666; margin: 20px 0;">
+            <p style="color: #666; margin: 20px 0; font-size: 18px;">
                 Sistem pendaftaran dan validasi tiket menggunakan QR Code.
+                Dapatkan QR Code unik untuk tiket Anda.
             </p>
         </div>
         
@@ -24,25 +31,44 @@
             <a href="daftar.html" class="btn" style="text-align: center; padding: 30px; background: #3498db;">
                 <div style="font-size: 40px; margin-bottom: 15px;">📝</div>
                 <h3>Daftar Peserta</h3>
-                <p style="font-size: 14px; margin-top: 10px;">Registrasi peserta baru</p>
+                <p style="font-size: 14px; margin-top: 10px;">Registrasi peserta baru dan dapatkan QR Code</p>
             </a>
             
             <a href="cek-qr.html" class="btn" style="text-align: center; padding: 30px; background: #2ecc71;">
                 <div style="font-size: 40px; margin-bottom: 15px;">🔍</div>
                 <h3>Cek & Download QR</h3>
-                <p style="font-size: 14px; margin-top: 10px;">Lihat dan download QR Code</p>
+                <p style="font-size: 14px; margin-top: 10px;">Lihat dan download QR Code tiket Anda</p>
             </a>
-            
         </div>
         
-        <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-            <h4>📋 Informasi Sistem:</h4>
-            <ul style="margin: 15px 0; padding-left: 20px;">
-                <li>Setiap peserta mendapatkan kode unik 8 digit</li>
-                <li>QR Code dibuat dari kode unik tersebut</li>
-                <li>Data tersimpan secara realtime di database</li>
-                <li>Validasi tiket menggunakan scanner QR Code</li>
-            </ul>
+        <div style="margin-top: 40px; padding: 25px; background: #f8f9fa; border-radius: 10px;">
+            <h4 style="text-align: center; margin-bottom: 20px;">📋 Cara Menggunakan Sistem:</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">1️⃣</div>
+                    <p><strong>Daftar</strong></p>
+                    <p style="font-size: 14px; color: #666;">Isi form pendaftaran dengan data lengkap</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">2️⃣</div>
+                    <p><strong>Dapatkan Kode</strong></p>
+                    <p style="font-size: 14px; color: #666;">Sistem akan generate kode unik 8 digit</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">3️⃣</div>
+                    <p><strong>Download QR</strong></p>
+                    <p style="font-size: 14px; color: #666;">Download QR Code untuk tiket Anda</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 30px; margin-bottom: 10px;">4️⃣</div>
+                    <p><strong>Validasi</strong></p>
+                    <p style="font-size: 14px; color: #666;">Tunjukkan QR Code saat check-in</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center; color: #7f8c8d; font-size: 14px;">
+            <p>© 2024 Sistem Tiket QR Code. Semua hak dilindungi.</p>
         </div>
     </div>
 </body>
