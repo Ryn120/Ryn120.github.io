@@ -3,320 +3,829 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner QR - Admin</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Scan Tiket Peserta</title>
     <style>
-        .scanner-container {
-            text-align: center;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-        
-        .method-selector {
+
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(90deg, #2575fc, #6a11cb);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-container {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #f1f5f9;
+            border: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #64748b;
+        }
+
+        .tab.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background-color: #e2e8f0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .camera-container {
+            width: 100%;
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+            aspect-ratio: 4/3;
+        }
+
+        #cameraVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .scan-frame {
+            width: 70%;
+            height: 70%;
+            border: 3px solid #3b82f6;
+            border-radius: 10px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        }
+
+        .camera-controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin: 30px 0;
-            flex-wrap: wrap;
+            margin-bottom: 25px;
         }
-        
-        .method-btn {
-            padding: 20px 30px;
+
+        .btn {
+            padding: 14px 28px;
             border: none;
             border-radius: 10px;
-            font-size: 18px;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 10px;
-            min-width: 200px;
-            transition: all 0.3s;
+            justify-content: center;
+            gap: 8px;
         }
-        
-        .method-btn.camera {
-            background: #007bff;
+
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
             color: white;
         }
-        
-        .method-btn.upload {
-            background: #28a745;
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
             color: white;
         }
-        
-        .method-btn.manual {
-            background: #6c757d;
-            color: white;
+
+        .btn-danger:hover {
+            background: linear-gradient(90deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
         }
-        
-        .method-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+
+        .btn i {
+            font-size: 1.2rem;
         }
-        
-        .scanner-area {
-            margin: 30px auto;
-            max-width: 500px;
-        }
-        
-        #cameraView {
-            width: 100%;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            display: none;
-        }
-        
-        #scanResult {
-            margin-top: 30px;
-            display: none;
-        }
-        
-        .result-valid {
-            background: #d4edda;
-            border-left: 5px solid #28a745;
-        }
-        
-        .result-invalid {
-            background: #f8d7da;
-            border-left: 5px solid #dc3545;
-        }
-        
-        .loading-scanner {
+
+        .upload-area {
+            border: 3px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 40px 20px;
             text-align: center;
-            padding: 40px;
-            color: #666;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
         }
-        
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+
+        .upload-area i {
+            font-size: 3rem;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+            color: #475569;
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .preview-container {
+            width: 100%;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        #previewImage {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-section {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .code-section h3 {
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .code-display {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .btn-validate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .btn-validate:hover {
+            background: linear-gradient(90deg, #059669, #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .error-message {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .success-message {
+            background-color: #d1fae5;
+            color: #059669;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav>
-        <a href="../index.html">🏠 Home</a>
-        <a href="index.html">📊 Dashboard</a>
-        <a href="scan.html" class="active">🔍 Scanner</a>
-        <a href="../daftar.html">📝 Daftar Baru</a>
-    </nav>
-
-    <div class="container fade-in">
-        <h1>🔍 Scanner Validasi Tiket</h1>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <h1>SCAN TIKET PESERTA</h1>
+            <p>ryn120.github.io/admin</p>
+        </div>
         
-        <div class="scanner-container">
-            <p>Pilih metode validasi tiket:</p>
+        <div class="content">
+            <div class="tab-container">
+                <div class="tab active" id="cameraTab">
+                    <i class="fas fa-camera"></i> Kamera
+                </div>
+                <div class="tab" id="uploadTab">
+                    <i class="fas fa-upload"></i> Upload Gambar
+                </div>
+            </div>
             
-            <div class="method-selector">
-                <button class="method-btn manual" onclick="showManualInput()">
-                    <div style="font-size: 40px;">⌨️</div>
-                    <div>Input Manual</div>
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Error: Cannot access 'db' before initialization</span>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> <span id="successText">Tiket berhasil divalidasi!</span>
+            </div>
+            
+            <!-- Konten Kamera -->
+            <div class="tab-content active" id="cameraContent">
+                <div class="camera-container">
+                    <video id="cameraVideo" autoplay playsinline></video>
+                    <div class="camera-overlay">
+                        <div class="scan-frame"></div>
+                    </div>
+                </div>
+                
+                <div class="camera-controls">
+                    <button class="btn btn-danger" id="stopCamera">
+                        <i class="fas fa-stop"></i> Matikan Kamera
+                    </button>
+                    <button class="btn btn-primary" id="captureBtn">
+                        <i class="fas fa-camera"></i> Ambil Gambar
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Konten Upload -->
+            <div class="tab-content" id="uploadContent">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Klik atau tarik gambar ke sini</h3>
+                    <p>Format yang didukung: JPG, PNG, GIF (Maks. 5MB)</p>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+            </div>
+            
+            <!-- Preview Gambar -->
+            <div class="preview-container" id="previewContainer">
+                <img id="previewImage" alt="Preview Gambar">
+            </div>
+            
+            <div class="code-section">
+                <h3>Kode Tiket</h3>
+                <div class="code-display" id="ticketCode">94986840</div>
+                <button class="btn btn-validate" id="validateBtn">
+                    <i class="fas fa-check-circle"></i> Validasi Tiket
                 </button>
-                
-                <button class="method-btn upload" onclick="showUpload()">
-                    <div style="font-size: 40px;">📁</div>
-                    <div>Upload Gambar</div>
-                </button>
             </div>
-            
-            <div class="scanner-area">
-                <div id="manualInputSection" style="display: none;">
-                    <h3>Input Kode Manual</h3>
-                    <input type="text" id="manualCode" placeholder="Masukkan 8 digit kode" 
-                           style="padding: 12px; width: 300px; border: 2px solid #ddd; border-radius: 8px; margin-right: 10px;">
-                    <button onclick="validateManualCode()" style="padding: 12px 20px;">Validasi</button>
-                </div>
-                
-                <div id="uploadSection" style="display: none;">
-                    <h3>Upload Gambar QR</h3>
-                    <input type="file" id="fileInput" accept="image/*" style="padding: 10px;">
-                    <div id="imagePreview" style="margin: 20px 0;"></div>
-                    <button onclick="processUploadedImage()" style="padding: 12px 20px;">Scan Gambar</button>
-                </div>
-                
-                <div id="loadingSection" class="loading-scanner" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Memproses...</p>
-                </div>
-            </div>
-            
-            <div id="scanResult" class="scan-result" style="padding: 20px; border-radius: 10px;">
-                <!-- Hasil validasi akan muncul di sini -->
-            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 ryn120.github.io | Sistem Validasi Tiket</p>
         </div>
     </div>
 
     <script>
-        // Data untuk Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDCEU9nyFJi-eSy0Uq3ysXbQlV7Ri4x-Gs",
-            authDomain: "qr-generet01.firebaseapp.com",
-            projectId: "qr-generet01",
-            storageBucket: "qr-generet01.firebasestorage.app",
-            messagingSenderId: "753131681292",
-            appId: "1:753131681292:web:d7622e7188ba1395e8a029"
-        };
+        // Inisialisasi variabel
+        let db;
+        let cameraStream = null;
+        let currentTab = 'camera';
         
-        // Inisialisasi Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Elemen DOM
+        const cameraTab = document.getElementById('cameraTab');
+        const uploadTab = document.getElementById('uploadTab');
+        const cameraContent = document.getElementById('cameraContent');
+        const uploadContent = document.getElementById('uploadContent');
+        const cameraVideo = document.getElementById('cameraVideo');
+        const stopCameraBtn = document.getElementById('stopCamera');
+        const captureBtn = document.getElementById('captureBtn');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const validateBtn = document.getElementById('validateBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const ticketCode = document.getElementById('ticketCode');
         
-        // Tampilkan input manual
-        function showManualInput() {
-            document.getElementById('manualInputSection').style.display = 'block';
-            document.getElementById('uploadSection').style.display = 'none';
-            document.getElementById('scanResult').style.display = 'none';
-            document.getElementById('manualCode').focus();
-        }
+        // Fungsi untuk mengganti tab
+        cameraTab.addEventListener('click', () => switchTab('camera'));
+        uploadTab.addEventListener('click', () => switchTab('upload'));
         
-        // Tampilkan upload
-        function showUpload() {
-            document.getElementById('uploadSection').style.display = 'block';
-            document.getElementById('manualInputSection').style.display = 'none';
-            document.getElementById('scanResult').style.display = 'none';
-        }
-        
-        // Validasi kode manual
-        async function validateManualCode() {
-            const code = document.getElementById('manualCode').value.trim();
+        function switchTab(tab) {
+            currentTab = tab;
             
-            if (!code || code.length !== 8) {
-                alert('Masukkan kode 8 digit yang valid!');
+            // Update tab aktif
+            cameraTab.classList.toggle('active', tab === 'camera');
+            uploadTab.classList.toggle('active', tab === 'upload');
+            
+            // Update konten aktif
+            cameraContent.classList.toggle('active', tab === 'camera');
+            uploadContent.classList.toggle('active', tab === 'upload');
+            
+            // Jika beralih ke kamera, aktifkan kamera
+            if (tab === 'camera') {
+                startCamera();
+            } else {
+                // Jika beralih ke upload, matikan kamera
+                stopCamera();
+            }
+            
+            // Sembunyikan preview
+            previewContainer.classList.remove('active');
+        }
+        
+        // Fungsi untuk memulai kamera
+        async function startCamera() {
+            try {
+                // Hentikan kamera yang sedang berjalan
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                }
+                
+                // Minta akses ke kamera belakang (jika tersedia)
+                const constraints = {
+                    video: {
+                        facingMode: 'environment', // Kamera belakang
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+                
+                cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                cameraVideo.srcObject = cameraStream;
+                
+                // Perbarui tampilan tombol
+                stopCameraBtn.innerHTML = '<i class="fas fa-stop"></i> Matikan Kamera';
+                captureBtn.disabled = false;
+                
+                // Sembunyikan pesan error jika ada
+                errorMessage.classList.remove('active');
+            } catch (err) {
+                console.error('Error mengakses kamera:', err);
+                errorMessage.querySelector('#errorText').textContent = 'Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.';
+                errorMessage.classList.add('active');
+                
+                // Nonaktifkan tombol ambil gambar
+                captureBtn.disabled = true;
+            }
+        }
+        
+        // Fungsi untuk menghentikan kamera
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+                cameraVideo.srcObject = null;
+                
+                // Perbarui tombol
+                stopCameraBtn.innerHTML = '<i class="fas fa-play"></i> Hidupkan Kamera';
+                captureBtn.disabled = true;
+            }
+        }
+        
+        // Event listener untuk tombol stop/start kamera
+        stopCameraBtn.addEventListener('click', function() {
+            if (cameraStream) {
+                stopCamera();
+            } else {
+                startCamera();
+            }
+        });
+        
+        // Fungsi untuk mengambil gambar dari kamera
+        captureBtn.addEventListener('click', function() {
+            if (!cameraStream) return;
+            
+            // Buat canvas untuk mengambil gambar
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraVideo.videoWidth;
+            canvas.height = cameraVideo.videoHeight;
+            
+            const context = canvas.getContext('2d');
+            context.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+            
+            // Konversi ke data URL
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+            
+            // Tampilkan preview
+            previewImage.src = imageDataUrl;
+            previewContainer.classList.add('active');
+            
+            // Sembunyikan pesan error
+            errorMessage.classList.remove('active');
+            
+            // Simpan gambar untuk validasi
+            localStorage.setItem('scannedTicket', imageDataUrl);
+        });
+        
+        // Fungsi untuk upload gambar
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#3b82f6';
+            uploadArea.style.backgroundColor = '#f8fafc';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#cbd5e1';
+            uploadArea.style.backgroundColor = 'transparent';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#cbd5e1';
+            uploadArea.style.backgroundColor = 'transparent';
+            
+            if (e.dataTransfer.files.length) {
+                handleImageUpload(e.dataTransfer.files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+        
+        function handleImageUpload(file) {
+            // Validasi tipe file
+            if (!file.type.match('image.*')) {
+                errorMessage.querySelector('#errorText').textContent = 'File harus berupa gambar (JPG, PNG, GIF)';
+                errorMessage.classList.add('active');
                 return;
             }
             
-            await validateQRCode(code);
-        }
-        
-        // Proses gambar yang diupload
-        async function processUploadedImage() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                alert('Pilih file gambar terlebih dahulu!');
+            // Validasi ukuran file (maks 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                errorMessage.querySelector('#errorText').textContent = 'Ukuran file terlalu besar (maks 5MB)';
+                errorMessage.classList.add('active');
                 return;
             }
-            
-            // Tampilkan loading
-            document.getElementById('loadingSection').style.display = 'block';
             
             // Baca file sebagai data URL
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Di sini Anda bisa menggunakan library jsQR untuk membaca QR dari gambar
-                // Untuk simplifikasi, kita minta user untuk input manual kode dari gambar
-                document.getElementById('loadingSection').style.display = 'none';
-                document.getElementById('imagePreview').innerHTML = `
-                    <img src="${e.target.result}" style="max-width: 300px; border-radius: 10px; margin: 10px 0;">
-                    <p style="color: #666; margin-top: 10px;">
-                        Silakan masukkan kode 8 digit dari QR Code secara manual.
-                    </p>
-                    <input type="text" id="codeFromImage" placeholder="Masukkan 8 digit kode" 
-                           style="padding: 12px; width: 300px; border: 2px solid #ddd; border-radius: 8px; margin-right: 10px;">
-                    <button onclick="validateCodeFromImage()" style="padding: 12px 20px;">Validasi</button>
-                `;
+                previewImage.src = e.target.result;
+                previewContainer.classList.add('active');
+                
+                // Sembunyikan pesan error
+                errorMessage.classList.remove('active');
+                
+                // Simpan gambar untuk validasi
+                localStorage.setItem('scannedTicket', e.target.result);
             };
             reader.readAsDataURL(file);
         }
         
-        // Validasi kode dari gambar
-        async function validateCodeFromImage() {
-            const code = document.getElementById('codeFromImage').value.trim();
+        // Fungsi untuk validasi tiket
+        validateBtn.addEventListener('click', async function() {
+            // Periksa apakah ada gambar yang dipindai/diunggah
+            const scannedTicket = localStorage.getItem('scannedTicket');
             
-            if (!code || code.length !== 8) {
-                alert('Masukkan kode 8 digit yang valid!');
+            if (!scannedTicket) {
+                errorMessage.querySelector('#errorText').textContent = 'Silakan pindai atau unggah gambar tiket terlebih dahulu';
+                errorMessage.classList.add('active');
+                successMessage.classList.remove('active');
                 return;
             }
             
-            await validateQRCode(code);
-        }
-        
-        // Fungsi validasi QR Code
-        async function validateQRCode(code) {
-            const resultDiv = document.getElementById('scanResult');
-            resultDiv.style.display = 'none';
-            
-            // Tampilkan loading
-            document.getElementById('loadingSection').style.display = 'block';
+            // Tampilkan animasi loading
+            validateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memvalidasi...';
+            validateBtn.disabled = true;
             
             try {
-                // Cari data di Firebase berdasarkan code (8 digit)
-                const snapshot = await db.collection("peserta")
-                    .where("code", "==", code)
-                    .get();
+                // Simulasi validasi dengan delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
                 
-                document.getElementById('loadingSection').style.display = 'none';
-                resultDiv.style.display = 'block';
+                // Inisialisasi database (contoh menggunakan IndexedDB)
+                await initializeDB();
                 
-                if (!snapshot.empty) {
-                    // Data ditemukan
-                    const doc = snapshot.docs[0];
-                    const user = doc.data();
+                // Ambil kode tiket dari elemen
+                const code = ticketCode.textContent.trim();
+                
+                // Simulasi validasi tiket
+                // Di sini Anda akan menambahkan logika validasi sebenarnya
+                const isValid = await validateTicketInDB(code);
+                
+                if (isValid) {
+                    // Tampilkan pesan sukses
+                    successMessage.querySelector('#successText').textContent = `Tiket dengan kode ${code} berhasil divalidasi!`;
+                    successMessage.classList.add('active');
+                    errorMessage.classList.remove('active');
                     
-                    resultDiv.className = 'scan-result result-valid';
-                    resultDiv.innerHTML = `
-                        <h3 style="color: #155724;">✅ TIKET VALID</h3>
-                        <div style="text-align: left; margin: 20px 0;">
-                            <p><strong>Nama:</strong> ${user.nama}</p>
-                            <p><strong>Kode:</strong> ${code}</p>
-                            <p><strong>No. Tiket:</strong> ${user.nomorTiket}</p>
-                            <p><strong>Email:</strong> ${user.email}</p>
-                            <p><strong>No. HP:</strong> ${user.hp}</p>
-                        </div>
-                        <div style="background: #28a745; color: white; padding: 10px; border-radius: 5px; font-weight: bold;">
-                            ✅ BOLEH MASUK - TIKET TERVERIFIKASI
-                        </div>
-                    `;
+                    // Reset tombol
+                    validateBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tiket Telah Valid!';
                     
+                    // Log aktivitas
+                    await logValidation(code, 'success');
                 } else {
-                    // Data tidak ditemukan
-                    resultDiv.className = 'scan-result result-invalid';
-                    resultDiv.innerHTML = `
-                        <h3 style="color: #721c24;">❌ TIKET TIDAK VALID</h3>
-                        <div style="text-align: left; margin: 20px 0;">
-                            <p>Kode: <strong>${code}</strong></p>
-                            <p>Tidak ditemukan dalam database.</p>
-                        </div>
-                        <div style="background: #dc3545; color: white; padding: 10px; border-radius: 5px; font-weight: bold;">
-                            ❌ AKSES DITOLAK - TIKET TIDAK TERDAFTAR
-                        </div>
-                    `;
+                    throw new Error('Tiket tidak valid atau sudah digunakan');
+                }
+            } catch (error) {
+                console.error('Error validasi:', error);
+                errorMessage.querySelector('#errorText').textContent = error.message || 'Gagal memvalidasi tiket. Silakan coba lagi.';
+                errorMessage.classList.add('active');
+                successMessage.classList.remove('active');
+                
+                // Reset tombol
+                validateBtn.innerHTML = '<i class="fas fa-check-circle"></i> Validasi Tiket';
+                validateBtn.disabled = false;
+            }
+        });
+        
+        // Fungsi inisialisasi database
+        function initializeDB() {
+            return new Promise((resolve, reject) => {
+                // Cek apakah database sudah diinisialisasi
+                if (db) {
+                    resolve(db);
+                    return;
                 }
                 
-                // Auto-hide setelah 10 detik
-                setTimeout(() => {
-                    resultDiv.style.display = 'none';
-                }, 10000);
+                const request = indexedDB.open('TicketDB', 1);
                 
-            } catch (error) {
-                document.getElementById('loadingSection').style.display = 'none';
-                alert('Error: ' + error.message);
-            }
+                request.onerror = function(event) {
+                    reject(new Error('Tidak dapat membuka database'));
+                };
+                
+                request.onsuccess = function(event) {
+                    db = event.target.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = function(event) {
+                    const database = event.target.result;
+                    
+                    // Buat object store untuk tiket
+                    if (!database.objectStoreNames.contains('tickets')) {
+                        const ticketStore = database.createObjectStore('tickets', { keyPath: 'code' });
+                        ticketStore.createIndex('status', 'status', { unique: false });
+                        
+                        // Tambahkan data contoh
+                        ticketStore.add({ code: '94986840', status: 'valid', owner: 'John Doe', event: 'Seminar Tech 2024' });
+                        ticketStore.add({ code: '12345678', status: 'valid', owner: 'Jane Smith', event: 'Seminar Tech 2024' });
+                        ticketStore.add({ code: '87654321', status: 'used', owner: 'Bob Johnson', event: 'Seminar Tech 2024' });
+                    }
+                    
+                    // Buat object store untuk log validasi
+                    if (!database.objectStoreNames.contains('validationLogs')) {
+                        database.createObjectStore('validationLogs', { autoIncrement: true });
+                    }
+                };
+            });
         }
         
-        // Support enter key pada input manual
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('manualCode').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    validateManualCode();
+        // Fungsi validasi tiket di database
+        function validateTicketInDB(ticketCode) {
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    reject(new Error('Database belum diinisialisasi'));
+                    return;
                 }
+                
+                const transaction = db.transaction(['tickets'], 'readonly');
+                const ticketStore = transaction.objectStore('tickets');
+                const request = ticketStore.get(ticketCode);
+                
+                request.onerror = function(event) {
+                    reject(new Error('Gagal mengakses database'));
+                };
+                
+                request.onsuccess = function(event) {
+                    const ticket = event.target.result;
+                    
+                    if (!ticket) {
+                        resolve(false); // Tiket tidak ditemukan
+                    } else if (ticket.status === 'valid') {
+                        // Update status tiket menjadi digunakan
+                        const updateTransaction = db.transaction(['tickets'], 'readwrite');
+                        const updateStore = updateTransaction.objectStore('tickets');
+                        
+                        ticket.status = 'used';
+                        const updateRequest = updateStore.put(ticket);
+                        
+                        updateRequest.onsuccess = function() {
+                            resolve(true);
+                        };
+                        
+                        updateRequest.onerror = function() {
+                            reject(new Error('Gagal memperbarui status tiket'));
+                        };
+                    } else {
+                        resolve(false); // Tiket sudah digunakan
+                    }
+                };
             });
+        }
+        
+        // Fungsi untuk log validasi
+        function logValidation(ticketCode, status) {
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    reject(new Error('Database belum diinisialisasi'));
+                    return;
+                }
+                
+                const transaction = db.transaction(['validationLogs'], 'readwrite');
+                const logStore = transaction.objectStore('validationLogs');
+                
+                const logEntry = {
+                    ticketCode: ticketCode,
+                    status: status,
+                    timestamp: new Date().toISOString(),
+                    scanMethod: currentTab,
+                    userAgent: navigator.userAgent
+                };
+                
+                const request = logStore.add(logEntry);
+                
+                request.onsuccess = function() {
+                    resolve();
+                };
+                
+                request.onerror = function() {
+                    reject(new Error('Gagal mencatat log validasi'));
+                };
+            });
+        }
+        
+        // Inisialisasi halaman
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mulai kamera secara otomatis
+            if (currentTab === 'camera') {
+                startCamera();
+            }
+            
+            // Coba inisialisasi database
+            initializeDB().catch(error => {
+                console.error('Gagal menginisialisasi database:', error);
+            });
+            
+            // Tampilkan kode tiket acak (contoh)
+            // Di aplikasi nyata, kode ini akan didapat dari hasil scan
+            generateRandomTicketCode();
         });
+        
+        // Fungsi untuk menghasilkan kode tiket acak (contoh)
+        function generateRandomTicketCode() {
+            // Jika sudah ada kode, jangan diganti
+            if (ticketCode.textContent && ticketCode.textContent !== '94986840') return;
+            
+            // Generate 8 digit angka acak
+            const randomCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+            ticketCode.textContent = randomCode;
+        }
     </script>
-    
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </body>
 </html>
