@@ -147,7 +147,7 @@ function renderTable(data) {
                     });
                 } catch (error) {
                     console.error("QR Error:", error);
-                    qrElem.innerHTML = `<div style="color:#999;">QR Error</div>`;
+                    qrElem.innerHTML = `<div style="color:#999; font-size:10px;">QR</div>`;
                 }
             }
         }, 100);
