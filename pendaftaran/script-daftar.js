@@ -93,25 +93,34 @@ document.getElementById("daftarForm").addEventListener("submit", async function 
     downloadBtn.style.display = "inline-block";
 
     downloadBtn.onclick = function () {
-      const img = qrContainer.querySelector("img");
       const canvas = qrContainer.querySelector("canvas");
 
-      let imgSrc = "";
-
-      if (img) {
-        imgSrc = img.src;
-      } else if (canvas) {
-        imgSrc = canvas.toDataURL("image/png");
-      } else {
-        alert("QR belum siap, coba lagi.");
+      if (!canvas) {
+        alert("QR belum siap.");
         return;
       }
 
+  // Buat canvas baru dengan background putih
+      const newCanvas = document.createElement("canvas");
+      const size = 500; // ukuran BESAR = QR tajam
+      newCanvas.width = size;
+      newCanvas.height = size;
+
+      const ctx = newCanvas.getContext("2d");
+
+  // Background putih (PENTING!)
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, size, size);
+
+  // Gambar QR ke canvas baru
+      ctx.drawImage(canvas, 0, 0, size, size);
+
+  // Download
       const a = document.createElement("a");
-      a.href = imgSrc;
+      a.href = newCanvas.toDataURL("image/png");
       a.download = "qr-tiket.png";
       a.click();
-    };
+      };
 
   } catch (error) {
     console.error(error);
