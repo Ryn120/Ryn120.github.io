@@ -5,79 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner QR - Admin</title>
     <link rel="stylesheet" href="../style.css">
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         .scanner-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-        
-        .scanner-header {
             text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .scanner-box {
-            background: white;
             padding: 20px;
+        }
+        
+        .method-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .method-btn {
+            padding: 20px 30px;
+            border: none;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+            transition: all 0.3s;
         }
         
-        #reader {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            border-radius: 10px;
-            overflow: hidden;
+        .method-btn.camera {
+            background: #007bff;
+            color: white;
         }
         
-        .scanner-instructions {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
+        .method-btn.upload {
+            background: #28a745;
+            color: white;
         }
         
-        .scan-result {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .btn-back {
-            display: inline-block;
-            padding: 10px 20px;
+        .method-btn.manual {
             background: #6c757d;
             color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
         }
         
-        .btn-back:hover {
-            background: #5a6268;
+        .method-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
         
-        .status-valid {
-            color: #28a745;
-            font-weight: bold;
+        .scanner-area {
+            margin: 30px auto;
+            max-width: 500px;
         }
         
-        .status-invalid {
-            color: #dc3545;
-            font-weight: bold;
+        #cameraView {
+            width: 100%;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            display: none;
+        }
+        
+        #scanResult {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-valid {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+        
+        .result-invalid {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
         }
         
         .loading-scanner {
@@ -85,88 +85,238 @@
             padding: 40px;
             color: #666;
         }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
     </style>
 </head>
 <body>
-    <div class="loading-overlay" id="loadingOverlay" style="display: flex;">
-        <div class="spinner"></div>
-        <p>Menyiapkan scanner...</p>
-    </div>
+    <nav>
+        <a href="../index.html">🏠 Home</a>
+        <a href="index.html">📊 Dashboard</a>
+        <a href="scan.html" class="active">🔍 Scanner</a>
+        <a href="../daftar.html">📝 Daftar Baru</a>
+    </nav>
 
-    <div class="scanner-container">
-        <div class="scanner-header">
-            <h1>🔍 Scanner Validasi Tiket</h1>
-            <p>Scan QR Code peserta untuk memvalidasi kehadiran</p>
-            <a href="index.html" class="btn-back">← Kembali ke Dashboard</a>
-        </div>
+    <div class="container fade-in">
+        <h1>🔍 Scanner Validasi Tiket</h1>
         
-        <div class="scanner-box">
-            <div id="reader">
-                <div class="loading-scanner">
-                    <div class="spinner" style="width: 40px; height: 40px;"></div>
-                    <p>Menginisialisasi scanner...</p>
-                    <p style="font-size: 14px; color: #999;">Pastikan kamera diizinkan</p>
+        <div class="scanner-container">
+            <p>Pilih metode validasi tiket:</p>
+            
+            <div class="method-selector">
+                <button class="method-btn manual" onclick="showManualInput()">
+                    <div style="font-size: 40px;">⌨️</div>
+                    <div>Input Manual</div>
+                </button>
+                
+                <button class="method-btn upload" onclick="showUpload()">
+                    <div style="font-size: 40px;">📁</div>
+                    <div>Upload Gambar</div>
+                </button>
+            </div>
+            
+            <div class="scanner-area">
+                <div id="manualInputSection" style="display: none;">
+                    <h3>Input Kode Manual</h3>
+                    <input type="text" id="manualCode" placeholder="Masukkan 8 digit kode" 
+                           style="padding: 12px; width: 300px; border: 2px solid #ddd; border-radius: 8px; margin-right: 10px;">
+                    <button onclick="validateManualCode()" style="padding: 12px 20px;">Validasi</button>
+                </div>
+                
+                <div id="uploadSection" style="display: none;">
+                    <h3>Upload Gambar QR</h3>
+                    <input type="file" id="fileInput" accept="image/*" style="padding: 10px;">
+                    <div id="imagePreview" style="margin: 20px 0;"></div>
+                    <button onclick="processUploadedImage()" style="padding: 12px 20px;">Scan Gambar</button>
+                </div>
+                
+                <div id="loadingSection" class="loading-scanner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Memproses...</p>
                 </div>
             </div>
-        </div>
-        
-        <div class="scanner-instructions">
-            <h3>📝 Petunjuk Penggunaan:</h3>
-            <ol>
-                <li>Izinkan akses kamera saat browser meminta</li>
-                <li>Arahkan kamera ke QR Code peserta</li>
-                <li>Pastikan QR Code berada dalam area scanner</li>
-                <li>Scanner akan bekerja secara otomatis</li>
-                <li>Hasil validasi akan muncul di bawah</li>
-            </ol>
-            <p><strong>Catatan:</strong> QR Code yang valid akan menampilkan data peserta.</p>
-        </div>
-        
-        <div id="scanResult" class="scan-result">
-            <!-- Hasil scan akan muncul di sini -->
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px;">
-            <p style="color: #666; font-size: 14px;">
-                <strong>Tips:</strong> Gunakan lingkungan dengan pencahayaan cukup untuk hasil scan optimal
-            </p>
+            
+            <div id="scanResult" class="scan-result" style="padding: 20px; border-radius: 10px;">
+                <!-- Hasil validasi akan muncul di sini -->
+            </div>
         </div>
     </div>
 
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-    </div>
-
-    <script type="module" src="script-admin.js"></script>
-    
     <script>
-        // Hide loading after scanner is ready
-        setTimeout(() => {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingOverlay) {
-                loadingOverlay.style.display = 'none';
-            }
-        }, 2000);
+        // Data untuk Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDCEU9nyFJi-eSy0Uq3ysXbQlV7Ri4x-Gs",
+            authDomain: "qr-generet01.firebaseapp.com",
+            projectId: "qr-generet01",
+            storageBucket: "qr-generet01.firebasestorage.app",
+            messagingSenderId: "753131681292",
+            appId: "1:753131681292:web:d7622e7188ba1395e8a029"
+        };
         
-        // Check for camera permission
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(() => {
-                    console.log('Camera access granted');
-                })
-                .catch((error) => {
-                    console.warn('Camera access denied:', error);
-                    document.getElementById('reader').innerHTML = `
-                        <div style="text-align: center; padding: 30px; color: #dc3545;">
-                            <h3>⚠️ Akses Kamera Ditolak</h3>
-                            <p>Silakan izinkan akses kamera untuk menggunakan scanner.</p>
-                            <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 10px;">
-                                🔄 Coba Lagi
-                            </button>
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Tampilkan input manual
+        function showManualInput() {
+            document.getElementById('manualInputSection').style.display = 'block';
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('scanResult').style.display = 'none';
+            document.getElementById('manualCode').focus();
+        }
+        
+        // Tampilkan upload
+        function showUpload() {
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('manualInputSection').style.display = 'none';
+            document.getElementById('scanResult').style.display = 'none';
+        }
+        
+        // Validasi kode manual
+        async function validateManualCode() {
+            const code = document.getElementById('manualCode').value.trim();
+            
+            if (!code || code.length !== 8) {
+                alert('Masukkan kode 8 digit yang valid!');
+                return;
+            }
+            
+            await validateQRCode(code);
+        }
+        
+        // Proses gambar yang diupload
+        async function processUploadedImage() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Pilih file gambar terlebih dahulu!');
+                return;
+            }
+            
+            // Tampilkan loading
+            document.getElementById('loadingSection').style.display = 'block';
+            
+            // Baca file sebagai data URL
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Di sini Anda bisa menggunakan library jsQR untuk membaca QR dari gambar
+                // Untuk simplifikasi, kita minta user untuk input manual kode dari gambar
+                document.getElementById('loadingSection').style.display = 'none';
+                document.getElementById('imagePreview').innerHTML = `
+                    <img src="${e.target.result}" style="max-width: 300px; border-radius: 10px; margin: 10px 0;">
+                    <p style="color: #666; margin-top: 10px;">
+                        Silakan masukkan kode 8 digit dari QR Code secara manual.
+                    </p>
+                    <input type="text" id="codeFromImage" placeholder="Masukkan 8 digit kode" 
+                           style="padding: 12px; width: 300px; border: 2px solid #ddd; border-radius: 8px; margin-right: 10px;">
+                    <button onclick="validateCodeFromImage()" style="padding: 12px 20px;">Validasi</button>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Validasi kode dari gambar
+        async function validateCodeFromImage() {
+            const code = document.getElementById('codeFromImage').value.trim();
+            
+            if (!code || code.length !== 8) {
+                alert('Masukkan kode 8 digit yang valid!');
+                return;
+            }
+            
+            await validateQRCode(code);
+        }
+        
+        // Fungsi validasi QR Code
+        async function validateQRCode(code) {
+            const resultDiv = document.getElementById('scanResult');
+            resultDiv.style.display = 'none';
+            
+            // Tampilkan loading
+            document.getElementById('loadingSection').style.display = 'block';
+            
+            try {
+                // Cari data di Firebase berdasarkan code (8 digit)
+                const snapshot = await db.collection("peserta")
+                    .where("code", "==", code)
+                    .get();
+                
+                document.getElementById('loadingSection').style.display = 'none';
+                resultDiv.style.display = 'block';
+                
+                if (!snapshot.empty) {
+                    // Data ditemukan
+                    const doc = snapshot.docs[0];
+                    const user = doc.data();
+                    
+                    resultDiv.className = 'scan-result result-valid';
+                    resultDiv.innerHTML = `
+                        <h3 style="color: #155724;">✅ TIKET VALID</h3>
+                        <div style="text-align: left; margin: 20px 0;">
+                            <p><strong>Nama:</strong> ${user.nama}</p>
+                            <p><strong>Kode:</strong> ${code}</p>
+                            <p><strong>No. Tiket:</strong> ${user.nomorTiket}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>No. HP:</strong> ${user.hp}</p>
+                        </div>
+                        <div style="background: #28a745; color: white; padding: 10px; border-radius: 5px; font-weight: bold;">
+                            ✅ BOLEH MASUK - TIKET TERVERIFIKASI
                         </div>
                     `;
-                });
+                    
+                } else {
+                    // Data tidak ditemukan
+                    resultDiv.className = 'scan-result result-invalid';
+                    resultDiv.innerHTML = `
+                        <h3 style="color: #721c24;">❌ TIKET TIDAK VALID</h3>
+                        <div style="text-align: left; margin: 20px 0;">
+                            <p>Kode: <strong>${code}</strong></p>
+                            <p>Tidak ditemukan dalam database.</p>
+                        </div>
+                        <div style="background: #dc3545; color: white; padding: 10px; border-radius: 5px; font-weight: bold;">
+                            ❌ AKSES DITOLAK - TIKET TIDAK TERDAFTAR
+                        </div>
+                    `;
+                }
+                
+                // Auto-hide setelah 10 detik
+                setTimeout(() => {
+                    resultDiv.style.display = 'none';
+                }, 10000);
+                
+            } catch (error) {
+                document.getElementById('loadingSection').style.display = 'none';
+                alert('Error: ' + error.message);
+            }
         }
+        
+        // Support enter key pada input manual
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('manualCode').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    validateManualCode();
+                }
+            });
+        });
     </script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </body>
 </html>
