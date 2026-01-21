@@ -97,7 +97,7 @@ const renderTable = (dataArray) => {
             </td>
             <td><b>${user.code}</b></td>
             <td>${user.nama}</td>
-            <td>${user.nomorId || '-'}</td>
+            <td>${user.nomorTiket || '-'}</td>
             <td><a href="mailto:${user.email}">${user.email}</a></td>
             <td><a href="tel:${user.hp}">${user.hp || '-'}</a></td>
             <td>
@@ -353,7 +353,7 @@ const exportToCSV = () => {
         ...globalData.map(item => [
             `"${item.code}"`,
             `"${item.nama}"`,
-            `"${item.nomorId || ''}"`,
+            `"${item.nomorTiket || ''}"`,
             `"${item.email}"`,
             `"${item.hp || ''}"`,
             `"${new Date(item.timestamp).toLocaleDateString('id-ID')}"`
