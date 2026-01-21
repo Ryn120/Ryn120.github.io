@@ -5,25 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scan QR - Admin</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Gunakan library scanner langsung -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
     <nav>
-        <a href="index.html">Data Peserta</a>
-        <a href="scan.html" class="active">Scan QR</a>
+        <a href="index.html">📊 Data Peserta</a>
+        <a href="scan.html" class="active">📱 Scan QR</a>
     </nav>
 
     <div class="container">
-        <h2>Scanner Validasi</h2>
-        <div id="reader" style="width: 100%; max-width: 500px; margin: auto;"></div>
+        <h2>🔍 Scanner Validasi QR Code</h2>
         
-        <div id="scanResult" style="display: none; margin-top: 20px; padding: 15px; border: 2px solid #28a745; border-radius: 8px;">
-            <h3>Data Cocok! ✅</h3>
-            <p><strong>Nama:</strong> <span id="resNama"></span></p>
-            <p><strong>Kode:</strong> <span id="resKode"></span></p>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <p>Pindai QR Code peserta untuk memvalidasi kehadiran</p>
+        </div>
+        
+        <div id="reader" style="width: 100%; max-width: 500px; margin: 20px auto;"></div>
+        
+        <div id="scanResult" style="display: none; margin: 30px auto; max-width: 500px;"></div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p><strong>Tips:</strong> Pastikan QR Code terlihat jelas dalam kotak scanner</p>
         </div>
     </div>
 
     <script type="module" src="script-admin.js"></script>
+    
+    <style>
+        #reader video {
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+    </style>
 </body>
 </html>

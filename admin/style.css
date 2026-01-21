@@ -323,3 +323,55 @@ tr:last-child td {
 #scanResult p {
     margin: 0.5rem 0;
     font-size: 1.1
+    
+  /* Tambahkan ke style.css yang sudah ada */
+
+/* Loading spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* QR Code container */
+.qr-container {
+    padding: 5px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #eee;
+    display: inline-block;
+}
+
+.qr-container canvas {
+    display: block;
+}
+
+/* Scanner styles */
+#reader__dashboard_section {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#reader__dashboard_section button {
+    margin: 5px;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#reader__dashboard_section button:hover {
+    background: #0056b3;
+}
+
+/* Make sure table displays properly */
+table {
+    min-width: 800px;
+}
+
+@media (max-width: 768px) {
+    table {
+        min-width: 600px;
+    }
+}
