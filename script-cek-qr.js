@@ -1,4 +1,4 @@
-// Firebase configuration (same as registration)
+// Firebase configuration (sama dengan pendaftaran)
 const firebaseConfig = {
     apiKey: "AIzaSyDCEU9nyFJi-eSy0Uq3ysXbQlV7Ri4x-Gs",
     authDomain: "qr-generet01.firebaseapp.com",
@@ -14,56 +14,58 @@ const db = firebase.firestore();
 
 let ticketData = null;
 
-// Handle ticket search form
+// Handle ticket search
 document.getElementById("cekForm").addEventListener("submit", async function(e) {
     e.preventDefault();
     
     const noTiket = document.getElementById('cekNomorTiket').value.trim();
     const message = document.getElementById('messageCek');
-    message.textContent = "";
+    message.innerHTML = "";
+    message.className = "";
+    
     document.getElementById('verifikasiForm').style.display = "none";
     document.getElementById('qrCode').innerHTML = "";
     document.getElementById('downloadBtn').style.display = "none";
     ticketData = null;
 
     if (!noTiket) {
-        message.textContent = "Masukkan nomor tiket terlebih dahulu!";
-        message.style.color = "#dc3545";
+        message.innerHTML = "❌ Masukkan nomor tiket terlebih dahulu!";
+        message.className = "message-error";
         return;
     }
 
     try {
-        // Show loading
-        message.textContent = "🔍 Mencari tiket...";
-        message.style.color = "#17a2b8";
+        message.innerHTML = "🔍 Mencari tiket...";
+        message.className = "message-info";
 
+        // Cari berdasarkan nomorTiket
         const snap = await db.collection('peserta').where('nomorTiket', '==', noTiket).get();
         
         if (snap.empty) {
-            message.textContent = "❌ Tiket tidak ditemukan!";
-            message.style.color = "#dc3545";
+            message.innerHTML = "❌ Tiket tidak ditemukan!";
+            message.className = "message-error";
             return;
         }
         
-        // Get ticket data
+        // Ambil data
         const doc = snap.docs[0];
         ticketData = {
             ...doc.data(),
             id: doc.id
         };
 
-        // Show verification form
+        // Tampilkan form verifikasi
         document.getElementById('verifikasiForm').style.display = "block";
         document.getElementById('namaCek').value = "";
         document.getElementById('hpCek').value = "";
         
-        message.textContent = "✅ Tiket ditemukan. Silakan verifikasi data.";
-        message.style.color = "#28a745";
+        message.innerHTML = "✅ Tiket ditemukan. Silakan verifikasi data Anda.";
+        message.className = "message-success";
 
     } catch (error) {
         console.error("Error:", error);
-        message.textContent = "❌ Error mengambil data tiket. Coba lagi.";
-        message.style.color = "#dc3545";
+        message.innerHTML = "❌ Error: " + error.message;
+        message.className = "message-error";
     }
 });
 
@@ -75,88 +77,106 @@ document.getElementById("verifBtn").addEventListener("click", function() {
     const hpInput = document.getElementById('hpCek').value.trim();
     const message = document.getElementById('messageCek');
 
-    // Check if inputs are empty
+    // Validasi input
     if (!namaInput || !hpInput) {
-        message.textContent = "❌ Harap isi nama dan nomor HP untuk verifikasi!";
-        message.style.color = "#dc3545";
+        message.innerHTML = "❌ Harap isi nama dan nomor HP untuk verifikasi!";
+        message.className = "message-error";
         return;
     }
 
-    // Check if data matches
-    if (namaInput === ticketData.nama && hpInput === ticketData.hp) {
-        // Verification successful
+    // Cocokkan data - case insensitive dan trim spasi
+    if (namaInput.toLowerCase() === ticketData.nama.toLowerCase() && 
+        hpInput.trim() === ticketData.hp.trim()) {
+        
+        // VERIFIKASI BERHASIL
         const qrContainer = document.getElementById("qrCode");
         qrContainer.innerHTML = "";
         
+        // PASTIKAN menggunakan code yang sama dengan yang disimpan!
+        const qrCode = ticketData.code || ticketData.id;
+        
         // Generate QR Code
         new QRCode(qrContainer, {
-            text: ticketData.code || ticketData.id,
+            text: qrCode,
             width: 200,
             height: 200,
             colorDark: "#2c3e50",
-            colorLight: "#ffffff"
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
         
-        // Show download button
+        // Tampilkan tombol download
         const downloadBtn = document.getElementById("downloadBtn");
         downloadBtn.style.display = "inline";
         downloadBtn.onclick = function() {
-            downloadQRCode(qrContainer, ticketData.nama);
+            downloadQRCode(qrContainer, ticketData.nama, qrCode, ticketData.nomorTiket);
         };
         
-        message.textContent = "✅ Verifikasi berhasil! QR Code telah ditampilkan.";
-        message.style.color = "#28a745";
+        message.innerHTML = "✅ Verifikasi berhasil! QR Code Anda siap.";
+        message.className = "message-success";
         
     } else {
-        message.textContent = "❌ Nama atau Nomor HP tidak cocok!";
-        message.style.color = "#dc3545";
+        message.innerHTML = "❌ Nama atau Nomor HP tidak cocok!";
+        message.className = "message-error";
     }
 });
 
-// Function to download QR Code
-function downloadQRCode(qrContainer, nama) {
+// Fungsi download QR Code yang SAMA dengan halaman daftar
+function downloadQRCode(qrContainer, nama, code, nomorTiket) {
     const canvas = qrContainer.querySelector("canvas");
+    
     if (!canvas) {
         alert("QR Code belum siap. Tunggu sebentar.");
         return;
     }
 
-    // Create new canvas with white background
+    // Buat canvas baru dengan ukuran lebih besar
     const newCanvas = document.createElement("canvas");
-    const size = 400;
+    const size = 500;
     newCanvas.width = size;
-    newCanvas.height = size;
+    newCanvas.height = size + 80;
 
     const ctx = newCanvas.getContext("2d");
     
-    // White background
+    // Background putih
     ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, size, size);
+    ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
     
-    // Draw QR code
-    ctx.drawImage(canvas, 50, 50, size - 100, size - 100);
+    // Gambar QR Code
+    const qrSize = 400;
+    const qrX = (size - qrSize) / 2;
+    const qrY = 40;
     
-    // Add name label
+    ctx.drawImage(canvas, qrX, qrY, qrSize, qrSize);
+    
+    // Tambahkan informasi teks
     ctx.fillStyle = "#2c3e50";
-    ctx.font = "bold 20px Arial";
+    ctx.font = "bold 24px Arial";
     ctx.textAlign = "center";
-    ctx.fillText(nama, size / 2, 30);
+    ctx.fillText("TIKET PESERTA", size / 2, 30);
     
-    // Add footer text
-    ctx.font = "14px Arial";
-    ctx.fillStyle = "#7f8c8d";
-    ctx.fillText("Tiket Peserta", size / 2, size - 10);
-
+    ctx.font = "18px Arial";
+    ctx.fillText(nama, size / 2, size + 40);
+    
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#666";
+    ctx.fillText(`Kode: ${code} | Tiket: ${nomorTiket}`, size / 2, size + 65);
+    
+    // Border
+    ctx.strokeStyle = "#ddd";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(10, 10, size - 20, size + 60);
+    
     // Download
     const link = document.createElement("a");
     link.href = newCanvas.toDataURL("image/png");
-    link.download = `tiket-${nama.replace(/\s+/g, '-')}.png`;
+    link.download = `Tiket-${nama.replace(/\s+/g, '-')}-${code}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 
-// Auto-focus on page load
+// Auto-focus
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('cekNomorTiket').focus();
 });
