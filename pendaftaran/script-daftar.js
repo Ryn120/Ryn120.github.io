@@ -42,7 +42,7 @@ document.getElementById("daftarForm").addEventListener("submit", async function(
 
     // Tidak ada duplikasi, simpan data ke Firestore
     var newDocRef = db.collection('peserta').doc(); // buat doc baru dengan ID otomatis
-    var kodeUnik = newDocRef.id; // gunakan ID dokumen sebagai kode unik
+    var code = newDocRef.id; // gunakan ID dokumen sebagai kode unik
     await newDocRef.set({
       nama: nama,
       nomorTiket: nomorTiket,
