@@ -618,4 +618,413 @@ document.addEventListener('DOMContentLoaded', () => {
 // Global functions
 window.searchData = searchData;
 window.sortData = sortData;
-window.exportToCSV = exportToCSV;
+window.exportToCSV = exportToCSV;import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+    getFirestore, collection, onSnapshot, deleteDoc, doc,
+    query, where, getDocs 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// --- KONFIGURASI FIREBASE ---
+const firebaseConfig = {
+    apiKey: "AIzaSyDCEU9nyFJi-eSy0Uq3ysXbQlV7Ri4x-Gs",
+    authDomain: "qr-generet01.firebaseapp.com",
+    projectId: "qr-generet01",
+    storageBucket: "qr-generet01.firebasestorage.app",
+    messagingSenderId: "753131681292",
+    appId: "1:753131681292:web:d7622e7188ba1395e8a029"
+};
+
+// Inisialisasi Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const DB_COLLECTION = "peserta";
+
+let globalData = [];
+
+// --- UTILITY FUNCTIONS ---
+const getElement = (id) => document.getElementById(id);
+
+const showToast = (message, type = 'info') => {
+    const toast = getElement('toast');
+    const toastMessage = getElement('toastMessage');
+    
+    if (!toast || !toastMessage) return;
+    
+    const colors = { success: '#28a745', error: '#dc3545', warning: '#ffc107', info: '#17a2b8' };
+    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    
+    toast.style.background = colors[type] || colors.info;
+    toastMessage.innerHTML = `${icons[type] || ''} ${message}`;
+    toast.style.display = 'block';
+    
+    setTimeout(() => toast.style.display = 'none', 3000);
+};
+
+// --- MAIN DATA LOGIC ---
+const initializeDataTable = () => {
+    const tableBody = getElement('tableBody');
+    if (!tableBody) return;
+
+    // Realtime listener
+    onSnapshot(collection(db, DB_COLLECTION), 
+        (snapshot) => {
+            globalData = [];
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                // PASTIKAN KITA MENGGUNAKAN FIELD YANG SAMA!
+                const userCode = data.code || doc.id;
+                
+                globalData.push({
+                    id: doc.id,
+                    code: userCode, // INI YANG PENTING!
+                    nama: data.nama || '-',
+                    nomorTiket: data.nomorTiket || '-',
+                    email: data.email || '-',
+                    hp: data.hp || '-',
+                    createdAt: data.createdAt ? data.createdAt.toDate().toLocaleString('id-ID') : 'N/A',
+                    // Simpan semua data untuk debugging
+                    _rawData: data
+                });
+            });
+            
+            console.log('Data loaded:', globalData);
+            renderTable(globalData);
+            getElement('loadingOverlay').style.display = 'none';
+        },
+        (error) => {
+            console.error("Error:", error);
+            showToast("Gagal memuat data", 'error');
+            getElement('loadingOverlay').style.display = 'none';
+        }
+    );
+};
+
+const renderTable = (dataArray) => {
+    const tableBody = getElement('tableBody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = dataArray.length ? '' : `
+        <tr><td colspan="8" style="text-align:center; padding:40px;">📭 Tidak ada data peserta</td></tr>`;
+    
+    dataArray.forEach(user => {
+        const row = document.createElement('tr');
+        
+        // Pastikan kita menggunakan user.code untuk QR Code
+        const qrCode = user.code;
+        const qrId = `qr-${qrCode.replace(/[^a-zA-Z0-9]/g, '-')}`;
+        
+        row.innerHTML = `
+            <td style="text-align:center; padding:15px;">
+                <div id="${qrId}" class="qr-container" style="min-width:80px; min-height:80px;"></div>
+                <small style="display:block; margin-top:5px; font-size:10px; color:#666;">${qrCode}</small>
+            </td>
+            <td><strong>${qrCode}</strong></td>
+            <td>${user.nama}</td>
+            <td>${user.nomorTiket}</td>
+            <td>${user.email}</td>
+            <td>${user.hp}</td>
+            <td>${user.createdAt}</td>
+            <td>
+                <button class="btn-delete" data-id="${user.id}" title="Hapus">
+                    🗑️
+                </button>
+            </td>`;
+        tableBody.appendChild(row);
+        
+        // Generate QR Code - PASTIKAN MENGGUNAKAN user.code
+        setTimeout(() => {
+            const qrElem = document.getElementById(qrId);
+            if (qrElem && typeof QRCode !== 'undefined') {
+                try {
+                    new QRCode(qrElem, {
+                        text: qrCode, // INI YANG PENTING!
+                        width: 80,
+                        height: 80,
+                        colorDark: "#2c3e50",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                } catch (error) {
+                    console.error('QR Error:', error);
+                    qrElem.innerHTML = `<div style="color:#dc3545;">QR Error</div>`;
+                }
+            }
+        }, 100);
+    });
+
+    // Delete button
+    tableBody.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('btn-delete')) {
+            const id = e.target.dataset.id;
+            if (confirm('Hapus peserta ini?')) {
+                try {
+                    await deleteDoc(doc(db, DB_COLLECTION, id));
+                    showToast('Data dihapus', 'success');
+                } catch (error) {
+                    showToast('Gagal menghapus', 'error');
+                }
+            }
+        }
+    });
+};
+
+const searchData = () => {
+    const term = getElement('searchInput')?.value.toLowerCase() || '';
+    if (!term) return renderTable(globalData);
+    
+    const filtered = globalData.filter(u => 
+        u.nama.toLowerCase().includes(term) ||
+        u.code.toLowerCase().includes(term) ||
+        u.nomorTiket.toLowerCase().includes(term) ||
+        u.email.toLowerCase().includes(term) ||
+        u.hp.toLowerCase().includes(term)
+    );
+    
+    renderTable(filtered);
+};
+
+// --- SIMPLE SCANNER ---
+const initializeScanner = () => {
+    const reader = getElement('reader');
+    if (!reader) return;
+    
+    reader.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <h3>Pilih Metode Scan</h3>
+            <div style="margin: 20px 0;">
+                <button id="btnManual" style="padding: 15px 30px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 10px;">
+                    📝 Input Manual
+                </button>
+                <button id="btnUpload" style="padding: 15px 30px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 10px;">
+                    📁 Upload Gambar QR
+                </button>
+                <button id="btnCamera" style="padding: 15px 30px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 10px;">
+                    📷 Gunakan Kamera (Beta)
+                </button>
+            </div>
+            
+            <div id="manualSection" style="display: none; margin: 20px 0;">
+                <input type="text" id="manualInput" placeholder="Masukkan kode QR/tiket" 
+                       style="padding: 12px; width: 300px; border: 2px solid #ddd; border-radius: 8px;">
+                <button id="btnSubmitManual" style="padding: 12px 20px; background: #007bff; color: white; border: none; border-radius: 8px;">
+                    Validasi
+                </button>
+            </div>
+            
+            <div id="uploadSection" style="display: none; margin: 20px 0;">
+                <input type="file" id="fileInput" accept="image/*" style="padding: 10px;">
+                <div id="previewContainer" style="margin: 10px 0;"></div>
+            </div>
+            
+            <div id="cameraSection" style="display: none; margin: 20px 0;">
+                <video id="cameraView" style="width: 100%; max-width: 500px; border-radius: 10px;"></video>
+                <div style="margin: 10px;">
+                    <button id="btnStartCamera" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px;">
+                        Mulai Kamera
+                    </button>
+                    <button id="btnStopCamera" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px;">
+                        Stop Kamera
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Event Listeners
+    document.getElementById('btnManual').addEventListener('click', () => {
+        document.getElementById('manualSection').style.display = 'block';
+        document.getElementById('uploadSection').style.display = 'none';
+        document.getElementById('cameraSection').style.display = 'none';
+    });
+    
+    document.getElementById('btnUpload').addEventListener('click', () => {
+        document.getElementById('uploadSection').style.display = 'block';
+        document.getElementById('manualSection').style.display = 'none';
+        document.getElementById('cameraSection').style.display = 'none';
+    });
+    
+    document.getElementById('btnCamera').addEventListener('click', () => {
+        document.getElementById('cameraSection').style.display = 'block';
+        document.getElementById('manualSection').style.display = 'none';
+        document.getElementById('uploadSection').style.display = 'none';
+    });
+    
+    // Manual Validation
+    document.getElementById('btnSubmitManual')?.addEventListener('click', validateManualCode);
+    document.getElementById('manualInput')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') validateManualCode();
+    });
+    
+    // File Upload
+    document.getElementById('fileInput')?.addEventListener('change', handleFileUpload);
+    
+    // Camera
+    document.getElementById('btnStartCamera')?.addEventListener('click', startCamera);
+    document.getElementById('btnStopCamera')?.addEventListener('click', stopCamera);
+    
+    async function validateManualCode() {
+        const code = document.getElementById('manualInput')?.value.trim();
+        if (!code) {
+            showToast('Masukkan kode terlebih dahulu', 'warning');
+            return;
+        }
+        
+        await validateQRCode(code);
+    }
+    
+    async function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const img = new Image();
+            img.onload = function() {
+                // Preview image
+                const preview = document.getElementById('previewContainer');
+                preview.innerHTML = `<img src="${e.target.result}" style="max-width: 300px; border-radius: 5px;">`;
+                
+                // Try to decode with jsQR if available
+                if (typeof jsQR === 'function') {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height);
+                        
+                        if (code) {
+                            validateQRCode(code.data);
+                        } else {
+                            showToast('Tidak dapat membaca QR Code dari gambar', 'error');
+                        }
+                    } catch (error) {
+                        showToast('Error membaca gambar: ' + error.message, 'error');
+                    }
+                } else {
+                    showToast('Library QR scanner tidak tersedia', 'warning');
+                }
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    let cameraStream = null;
+    
+    async function startCamera() {
+        try {
+            const video = document.getElementById('cameraView');
+            cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'environment' } 
+            });
+            video.srcObject = cameraStream;
+            video.play();
+            
+            showToast('Kamera berhasil diaktifkan', 'success');
+        } catch (error) {
+            showToast('Gagal mengakses kamera: ' + error.message, 'error');
+        }
+    }
+    
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+            document.getElementById('cameraView').srcObject = null;
+        }
+    }
+    
+    async function validateQRCode(code) {
+        try {
+            const q = query(collection(db, DB_COLLECTION), where("code", "==", code));
+            const snapshot = await getDocs(q);
+            
+            const resultDiv = getElement('scanResult');
+            if (!resultDiv) return;
+            
+            if (!snapshot.empty) {
+                const doc = snapshot.docs[0];
+                const user = doc.data();
+                
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <div style="background: #d4edda; padding: 25px; border-radius: 15px; border-left: 5px solid #28a745;">
+                        <h3 style="color: #155724; margin-bottom: 15px;">
+                            ✅ TIKET VALID - BOLEH MASUK
+                        </h3>
+                        <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                            <p><strong>👤 Nama:</strong> ${user.nama || '-'}</p>
+                            <p><strong>🔢 Kode:</strong> <code style="background: #f8f9fa; padding: 3px 8px; border-radius: 4px;">${code}</code></p>
+                            <p><strong>🎫 No. Tiket:</strong> ${user.nomorTiket || '-'}</p>
+                            <p><strong>📧 Email:</strong> ${user.email || '-'}</p>
+                            <p><strong>📱 No. HP:</strong> ${user.hp || '-'}</p>
+                        </div>
+                        <div style="text-align: center; color: #0c5460; font-size: 14px;">
+                            <i>Waktu validasi: ${new Date().toLocaleTimeString('id-ID')}</i>
+                        </div>
+                    </div>
+                `;
+                
+            } else {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <div style="background: #f8d7da; padding: 25px; border-radius: 15px; border-left: 5px solid #dc3545;">
+                        <h3 style="color: #721c24; margin-bottom: 15px;">
+                            ❌ TIKET TIDAK VALID
+                        </h3>
+                        <div style="background: white; padding: 20px; border-radius: 10px;">
+                            <p>Kode yang discan: <code style="background: #f8f9fa; padding: 3px 8px; border-radius: 4px;">${code}</code></p>
+                            <p style="color: #666; margin-top: 10px;">
+                                <i>⚠️ Kode tidak ditemukan dalam database peserta.</i>
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Auto-hide setelah 5 detik
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 5000);
+            
+        } catch (error) {
+            console.error('Validation error:', error);
+            showToast('Error memvalidasi tiket', 'error');
+        }
+    }
+};
+
+// --- PAGE INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    const isAdminPage = path.includes('admin/index.html') || (path.includes('admin/') && !path.includes('scan.html'));
+    const isScanPage = path.includes('scan.html');
+    
+    if (isAdminPage) {
+        initializeDataTable();
+        
+        const searchInput = getElement('searchInput');
+        const sortButton = getElement('btnSort');
+        
+        if (searchInput) searchInput.addEventListener('input', searchData);
+        if (sortButton) sortButton.addEventListener('click', () => {
+            globalData.sort((a, b) => a.nama.localeCompare(b.nama));
+            renderTable(globalData);
+        });
+        
+    } else if (isScanPage) {
+        // Load jsQR untuk scan gambar
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
+        document.head.appendChild(script);
+        
+        setTimeout(initializeScanner, 1000);
+    }
+});
+
+// Global functions
+window.searchData = searchData;
