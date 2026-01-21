@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scan QR - Admin</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Gunakan library scanner langsung -->
+    <!-- Scanner library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
@@ -15,24 +15,41 @@
     </nav>
 
     <div class="container">
-        <h2>🔍 Scanner Validasi QR Code</h2>
+        <h2>🔍 Scanner QR Code</h2>
         
-        <div style="text-align: center; margin-bottom: 20px;">
-            <p>Pindai QR Code peserta untuk memvalidasi kehadiran</p>
+        <div style="text-align: center; margin-bottom: 20px; color: #666;">
+            <p>Arahkan kamera ke QR Code peserta untuk validasi</p>
         </div>
         
-        <div id="reader" style="width: 100%; max-width: 500px; margin: 20px auto;"></div>
+        <div id="reader" style="width: 100%; max-width: 500px; margin: 20px auto; min-height: 400px;">
+            <div style="text-align: center; padding: 50px; color: #666;">
+                <div style="font-size: 48px; margin-bottom: 20px;">📱</div>
+                <p>Menyiapkan scanner...</p>
+                <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto;"></div>
+            </div>
+        </div>
         
         <div id="scanResult" style="display: none; margin: 30px auto; max-width: 500px;"></div>
         
-        <div style="text-align: center; margin-top: 30px; color: #666;">
-            <p><strong>Tips:</strong> Pastikan QR Code terlihat jelas dalam kotak scanner</p>
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h4>📝 Cara Penggunaan:</h4>
+            <ol style="text-align: left; display: inline-block; margin: 10px 0;">
+                <li>Izinkan akses kamera ketika diminta</li>
+                <li>Arahkan kamera ke QR Code peserta</li>
+                <li>Pastikan QR Code berada dalam kotak scanner</li>
+                <li>Tunggu hingga terdeteksi otomatis</li>
+            </ol>
         </div>
     </div>
 
     <script type="module" src="script-admin.js"></script>
     
     <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         #reader video {
             border-radius: 10px;
             border: 2px solid #ddd;
