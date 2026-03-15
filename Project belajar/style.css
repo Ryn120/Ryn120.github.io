@@ -1,0 +1,21 @@
+xmp{
+  background-color: black;
+  color: white;
+}
+dl dt{
+  font-weight:bold;
+}
+dl dd a img{
+  width:100%;
+  height:auto;
+  max-width:15dvw;
+  float:right;
+}
+.container{
+  border: 2px groove;
+  background-color: #ebebeb;
+  margin: 25px;
+  padding: 2px;
+  height: auto;
+  overflow: hidden;
+}
