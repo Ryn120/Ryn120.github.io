@@ -62,7 +62,7 @@ img {
   border-radius: 2px;
   background-color:  #313244;
   flex: 1 1 255px;
-  transition: 1.5s;
+  transition: 0.5s;
   min-width: 192px;
 }
 .project:active{
