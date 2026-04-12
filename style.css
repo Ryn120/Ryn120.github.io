@@ -40,6 +40,7 @@ img {
   border-radius: 2px;
   border-bottom:2px #89B4FA solid;
   border-top: 2px #89B4FA solid;
+  background-color: #181825;
 }
 .project-items {
   display: flex;
@@ -68,7 +69,7 @@ img {
   border-bottom: 2px solid  #89B4FA;
   transition: 0s;
 }
-.project:hover,{
-  background-color:  #181825;
+.project:hover{
+  background-color: #181825;
 }
 
