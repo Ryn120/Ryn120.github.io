@@ -74,8 +74,6 @@ img {
 }
 .project:hover{
   background-color: #181825;
-  outline-color: #89B4FA;
-  outline-style: groove;
 }
 
 .project p{
