@@ -65,6 +65,7 @@ img {
   transition: 0.5s;
   min-width: 192px;
   justify-content: center;
+  height: auto;
 }
 .project:active{
   background-color:  #181825;
