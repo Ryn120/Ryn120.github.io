@@ -64,6 +64,7 @@ img {
   flex: 1 1 255px;
   transition: 0.5s;
   min-width: 192px;
+  justify-content: center;
 }
 .project:active{
   background-color:  #181825;
