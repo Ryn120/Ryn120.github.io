@@ -34,7 +34,7 @@ img {
   max-width: 100%;
   height: auto;
   border: 2px #89B4FA solid;
-  border-radius: 2px;
+  border-radius: 12px;
 }
 .projectbox{
   margin: 5dvw;
