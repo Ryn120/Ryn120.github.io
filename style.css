@@ -16,7 +16,7 @@ nav{
   width: 100dvw;
 }
 .profil{
-  margin-right: 0%;
+  margin-right: 0px;
 }
 @media screen and (min-width:721px){
 .profil{
