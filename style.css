@@ -9,6 +9,7 @@ nav, footer{
   justify-content: center;
   font-size: 0.75rem;
   width: 100dvw;
+  margin: 0px;
 }
 nav{
   position: fixed;
