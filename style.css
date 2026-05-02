@@ -12,8 +12,11 @@ nav{
   left: 0;
   width: 100dvw;
 }
-.logo{
+.profil{
   margin-right: auto;
+}
+.menu-cepat{
+  display: flex;
 }
 body {
   background-color: #1E1E2E;
