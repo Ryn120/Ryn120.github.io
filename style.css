@@ -25,16 +25,18 @@ nav{
 .menu-cepat{
   
 }
+
+html{
+  scroll-behavior: smooth;
+}
 body {
   background-color: #1E1E2E;
   font-family: "Times New Roman", Times, serif;
   padding-top: 65px;
 }
-html{
-  scroll-behavior: smooth;
-}
 section{
   scroll-margin-top: 65px;
+  margin-bottom: 20px;
   height: 100dvh;
   padding: 20px;
 }
