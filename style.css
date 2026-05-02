@@ -15,9 +15,10 @@ nav{
   right: 0;
   width: 100dvw;
 }
+@media screen and (min-width:721px){
 .profil{
   margin-right: auto;
-}
+}}
 .menu-cepat{
   
 }
