@@ -1,8 +1,9 @@
 nav, footer{
-  position: fixed;
   background-color: #181825;
   border-bottom: 2px solid #89B4FA;
-  padding-top: 1px;
+}
+nav{
+  position: fixed;
 }
 body {
   background-color: #1E1E2E;
