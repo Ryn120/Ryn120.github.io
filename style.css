@@ -20,6 +20,7 @@ nav{
 }
 @media screen and (min-width:721px){
 .profil{
+  margin-left: 4px;
   margin-right: auto;
 }}
 .menu-cepat{
