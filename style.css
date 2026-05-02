@@ -52,9 +52,11 @@ h1,h2,h3,h4,h5,h6{
   overflow: hidden;
   box-shadow: 4px 8px rgba(0,0,0,0.3);
 }
+.container p{
+  text-align: justify;
+}
 p {
   color: #CDD6F4;
-  text-align: justify;
 }
 a{
   color: #89B4FA;
