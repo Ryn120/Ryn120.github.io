@@ -8,13 +8,13 @@ nav, footer{
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
+  width: 100dvw;
 }
 nav{
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  width: 100dvw;
 }
 .profil{
   margin-right: 0px;
