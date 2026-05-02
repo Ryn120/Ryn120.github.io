@@ -6,6 +6,7 @@ nav, footer{
   display: flex;
   gap: 25px;
   align-items: center;
+  justify-content: center;
 }
 nav{
   position: fixed;
