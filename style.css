@@ -1,7 +1,7 @@
 nav, footer{
   background-color: #181825;
   border-bottom: 2px solid #89B4FA;
-  padding: 6dvh 3dvw;
+  padding: 6px 3px;
 }
 nav{
   position: fixed;
