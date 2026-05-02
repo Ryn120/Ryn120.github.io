@@ -42,6 +42,7 @@ body {
   background-color: #1E1E2E;
   font-family: "Times New Roman", Times, serif;
   padding-top: 65px;
+  margin: 0px;
 }
 section{
   scroll-margin-top: 100px;
