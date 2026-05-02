@@ -17,10 +17,10 @@ nav{
 }
 .profil{
   margin-right: 0px;
+  margin-left: 4dvw;
 }
 @media screen and (min-width:721px){
 .profil{
-  margin-left: 16px;
   margin-right: auto;
 }}
 .menu-cepat{
