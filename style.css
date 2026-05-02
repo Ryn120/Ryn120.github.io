@@ -1,7 +1,7 @@
 nav, footer{
   background-color: #181825;
   border-bottom: 2px solid #89B4FA;
-  padding: 6px 3px;
+  padding: 12px 3px;
   height: 60px;
   display: flex;
   gap: 25px;
