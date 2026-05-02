@@ -35,6 +35,7 @@ body {
   background-color: #1E1E2E;
   font-family: "Times New Roman", Times, serif;
   padding-top: 65px;
+  height: 100dvh;
 }
 section{
   scroll-margin-top: 100px;
