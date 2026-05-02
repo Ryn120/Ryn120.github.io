@@ -43,6 +43,9 @@ body {
   font-family: "Times New Roman", Times, serif;
   padding-top: 65px;
   margin: 0px;
+  height: 100%;
+  width: 100%;
+  transition: 0.5ms;
 }
 section{
   scroll-margin-top: 100px;
