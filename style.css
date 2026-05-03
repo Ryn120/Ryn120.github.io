@@ -155,6 +155,7 @@ a{
 .project:hover{
   box-shadow: 0 0 20px 5px rgba(137, 180, 250, 0.4);
   transform: scale(1.25);
+  border-radius: 25%;
 }
 
 .project p{
