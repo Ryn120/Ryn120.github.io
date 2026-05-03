@@ -93,7 +93,7 @@ h1,h2,h3,h4,h5,h6{
   align-items: center;
   transition: 0.5s;
 }
-.contact :hover{
+.contact:hover{
   width: 255px;
   height: 92px;
 }
