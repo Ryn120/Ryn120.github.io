@@ -24,7 +24,12 @@ nav{
 @media screen and (min-width:721px){
 .profil{
   margin-right: auto;
-}}
+}
+  img{
+    float: left;
+    margin: 4px;
+  }
+}
 .menu-cepat{
   margin: 2dvw;
   display: flex;
