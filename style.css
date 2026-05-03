@@ -72,10 +72,7 @@ h1,h2,h3,h4,h5,h6{
   margin: 4px auto;
   border-radius: 50%;
 }
-.contact-container{
-  margin: 5dvw;
-  padding: 15px;
-}
+
 .contact-group{
   display: flex;
   flex-direction: column;
