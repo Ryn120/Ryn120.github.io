@@ -144,7 +144,7 @@ a{
   border-radius: 2px;
   background-color:  #313244;
   flex: 1 1 255px;
-  min-width: 192px;
+  width: 192px;
   justify-content: center;
   height: auto;
   overflow: hidden;
