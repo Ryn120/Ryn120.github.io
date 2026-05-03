@@ -17,6 +17,7 @@ nav{
   left: 0;
   right: 0;
   border-bottom: 2px solid #89B4FA;
+  z-index: 999;
 }
 footer{
   border-top: 2px solid #89B4FA;
