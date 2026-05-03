@@ -71,7 +71,7 @@ h1,h2,h3,h4,h5,h6{
 }
 .contact-group{
   display: flex;
-  width: auto;
+  width: 255px;
   height: auto;
   flex-direction: column;
   justify-content: center;
