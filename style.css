@@ -93,6 +93,7 @@ h1,h2,h3,h4,h5,h6{
 }
 .contact :hover{
   width: 255px;
+  height: 92px;
 }
 .contact img{
   margin: 4px 4px;
