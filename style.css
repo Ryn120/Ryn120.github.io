@@ -31,15 +31,7 @@ img {
   border-radius: 50%;
   margin: 1px auto;
 }
-@media screen and (min-width:721px){
-.profil{
-  margin-right: auto;
-}
-.container img{
-  float: left;
-  margin: 4px 4px;
-  }
-}
+
 .menu-cepat{
   margin: 2dvw;
   display: flex;
@@ -130,4 +122,14 @@ a{
 .project p{
   color: red;
   text-align: center;
+}
+/*view-komputer*/
+@media screen and (min-width:721px){
+.profil{
+  margin-right: auto;
+}
+.container img{
+  float: left;
+  margin: 4px 4px;
+  }
 }
