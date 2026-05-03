@@ -23,12 +23,13 @@ nav{
 }
 img {
   float: none;
+  display: block;
   width: 15dvw;
   max-width: 100%;
   height: auto;
   border: 2px #89B4FA solid;
   border-radius: 50%;
-  margin 4px
+  margin: 1px auto;
 }
 @media screen and (min-width:721px){
 .profil{
@@ -36,7 +37,7 @@ img {
 }
 img{
   float: left;
-  margin: 4px;
+  margin: 4px 4px;
   }
 }
 .menu-cepat{
