@@ -69,7 +69,7 @@ h1,h2,h3,h4,h5,h6{
 .contact-group{
   justify-content: center;
   display: flex;
-  overflow: hidden;
+  
   flex-direction: column;
 }
 .contact{
@@ -78,6 +78,7 @@ h1,h2,h3,h4,h5,h6{
   width: auto;
   height: auto;
   margin: 2%;
+  overflow: hidden;
 }
 .contact img{
   float: left;
