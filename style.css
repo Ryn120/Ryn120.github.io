@@ -21,6 +21,15 @@ nav{
   margin-right: 0px;
   margin-left: 4dvw;
 }
+img {
+  float: none;
+  width: 15dvw;
+  max-width: 100%;
+  height: auto;
+  border: 2px #89B4FA solid;
+  border-radius: 50%;
+  margin 4px
+}
 @media screen and (min-width:721px){
 .profil{
   margin-right: auto;
@@ -74,15 +83,7 @@ a{
   -webkit-tap-highlight-color: transparent;
 }
 
-img {
-  float: none;
-  width: 15dvw;
-  max-width: 100%;
-  height: auto;
-  border: 2px #89B4FA solid;
-  border-radius: 50%;
-  margin 4px
-}
+
 .projectbox{
   margin: 5dvw;
   padding: 15px;
