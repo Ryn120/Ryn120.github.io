@@ -69,18 +69,13 @@ h1,h2,h3,h4,h5,h6{
 }
 .contact{
   background-color: #313244;
-  display: flex;
+  justify-content: center;
   margin: 4px auto;
-  flex-direction: row;
 }
 .contact img{
   float: left;
   width: 5dvw;
   margin: 4px 4px;
-}
-.contact a{
-  display: block;
-  margin: 1px auto;
 }
 p {
   color: #CDD6F4;
