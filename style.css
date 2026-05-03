@@ -68,7 +68,16 @@ h1,h2,h3,h4,h5,h6{
 .container p{
   text-align: justify;
 }
-.contact
+.contact{
+  background-color: #313244;
+  display: block;
+  margin: 4px auto;
+}
+.contact img{
+  float: left;
+  width: 5dvw;
+  margin: 4px 4px;
+}
 p {
   color: #CDD6F4;
 }
