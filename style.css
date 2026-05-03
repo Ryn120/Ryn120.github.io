@@ -71,6 +71,7 @@ h1,h2,h3,h4,h5,h6{
   background-color: #313244;
   justify-content: center;
   margin: 4px auto;
+  overflow: hidden;
 }
 .contact img{
   float: left;
