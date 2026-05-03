@@ -85,7 +85,7 @@ h1,h2,h3,h4,h5,h6{
   flex: 1 1 255px;
   width: auto;
   height: 64px;
-  margin: 2%;
+  margin: 2dvw;
   overflow: hidden;
   flex-direction: row;
   justify-content: center;
