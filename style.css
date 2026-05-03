@@ -1,6 +1,5 @@
 nav, footer{
   background-color: #181825;
-  border-bottom: 2px solid #89B4FA;
   padding: 12px 3px;
   min-height: 60px;
   max-height: 65px;
@@ -17,6 +16,10 @@ nav{
   top: 0;
   left: 0;
   right: 0;
+  border-bottom: 2px solid #89B4FA;
+}
+footer{
+  border-top: 2px solid #89B4FA;
 }
 .profil{
   margin-right: 0px;
