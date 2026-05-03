@@ -35,7 +35,7 @@ img {
 .profil{
   margin-right: auto;
 }
-img{
+.container img{
   float: left;
   margin: 4px 4px;
   }
