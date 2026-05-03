@@ -67,10 +67,13 @@ h1,h2,h3,h4,h5,h6{
   text-align: justify;
 }
 .contact-group{
-  background-color: #313244;
   justify-content: center;
+  display: flex;
   margin: 4px auto;
   overflow: hidden;
+}
+.contact{
+  background-color: #313244;
 }
 .contact img{
   float: left;
