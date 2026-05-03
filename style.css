@@ -87,11 +87,10 @@ h1,h2,h3,h4,h5,h6{
   justify-content: center;
 }
 .contact img{
-  width: 5dvw;
+  width: 32px;
   height: auto;
   margin: 4px 4px;
   aspect-ratio: 1/1;
-  flex-grow: 0;
 }
 p {
   color: #CDD6F4;
