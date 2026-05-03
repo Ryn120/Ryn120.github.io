@@ -153,7 +153,8 @@ a{
   transition: 0s;
 }
 .project:hover{
-  background-color: #181825;
+  background-color: #89B4FA;
+  transform: scale(1.25);
 }
 
 .project p{
