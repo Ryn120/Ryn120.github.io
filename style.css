@@ -27,7 +27,7 @@ nav{
 }
   img{
     float: left;
-    margin: 4px;
+    margin: 16px;
   }
 }
 .menu-cepat{
@@ -74,7 +74,7 @@ a{
 }
 
 img {
-  float: left;
+  float: none;
   width: 15dvw;
   max-width: 100%;
   height: auto;
