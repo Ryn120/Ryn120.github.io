@@ -89,7 +89,7 @@ h1,h2,h3,h4,h5,h6{
 .contact img{
   width: 32px;
   height: auto;
-  margin: 4px 4px;
+  margin-right: 12px;
   aspect-ratio: 1 / 1;
   flex-shrink: 0;
 }
