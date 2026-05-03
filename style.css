@@ -147,6 +147,7 @@ a{
   min-width: 192px;
   justify-content: center;
   height: auto;
+  overflow: hidden;
   transition: 0.5s;
 }
 .project:active{
