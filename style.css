@@ -90,6 +90,7 @@ h1,h2,h3,h4,h5,h6{
   width: 5dvw;
   height: auto;
   margin: 4px 4px;
+  aspect-ratio: 1/1;
 }
 p {
   color: #CDD6F4;
