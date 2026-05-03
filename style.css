@@ -83,7 +83,7 @@ h1,h2,h3,h4,h5,h6{
   display: flex;
   background-color: #313244;
   flex: 1 1 255px;
-  width: 192;
+  width: 192px;
   height: 64px;
   margin: 2dvw;
   overflow: hidden;
@@ -92,7 +92,7 @@ h1,h2,h3,h4,h5,h6{
   align-items: center;
 }
 .contact :hover{
-  width: 255;
+  width: 255px;
 }
 .contact img{
   margin: 4px 4px;
