@@ -80,9 +80,9 @@ h1,h2,h3,h4,h5,h6{
   height: auto;
   margin: 2%;
   overflow: hidden;
+  flex-direction: row;
 }
 .contact img{
-  float: left;
   width: 5dvw;
   margin: 4px 4px;
 }
