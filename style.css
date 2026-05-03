@@ -154,6 +154,7 @@ a{
 }
 .project:hover{
   background-color: #89B4FA;
+  box-shadow: 8px 8px 8px 8px #89B4FA;
   transform: scale(1.25);
 }
 
