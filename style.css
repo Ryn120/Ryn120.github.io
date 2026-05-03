@@ -28,7 +28,7 @@ img {
   max-width: 100%;
   height: auto;
   border: 2px #89B4FA solid;
-  border-radius: 50%;
+  
 }
 
 .menu-cepat{
@@ -67,6 +67,7 @@ h1,h2,h3,h4,h5,h6{
 .container img{
   display: block;
   margin: 4px auto;
+  border-radius: 50%;
 }
 .contact-group{
   justify-content: center;
