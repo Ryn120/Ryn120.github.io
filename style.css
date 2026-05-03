@@ -122,6 +122,7 @@ a{
   border-bottom:2px #89B4FA solid;
   border-top: 2px #89B4FA solid;
   background-color: #181825;
+  overflow: hidden;
 }
 .project-items {
   display: flex;
