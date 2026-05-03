@@ -22,6 +22,7 @@ nav{
   margin-left: 4dvw;
 }
 img {
+  float: none;
   width: 15dvw;
   max-width: 100%;
   height: auto;
@@ -33,9 +34,9 @@ img {
 .profil{
   margin-right: auto;
 }
-  img{
-    float: left;
-    margin: 4px;
+img{
+  float: left;
+  margin: 4px;
   }
 }
 .menu-cepat{
