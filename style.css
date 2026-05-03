@@ -70,9 +70,11 @@ h1,h2,h3,h4,h5,h6{
   justify-content: center;
   display: flex;
   overflow: hidden;
+  flex-direction: row;
 }
 .contact{
   background-color: #313244;
+  flex: 1 1 255px;
 }
 .contact img{
   float: left;
