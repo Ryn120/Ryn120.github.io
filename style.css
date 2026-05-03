@@ -148,9 +148,6 @@ a{
   height: auto;
 }
 .project:active{
-  background-color:  #181825;
-  border-bottom: 2px solid  #89B4FA;
-  transition: 0s;
 }
 .project:hover{
   background-color: #89B4FA;
