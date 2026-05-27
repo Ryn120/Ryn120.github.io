@@ -150,8 +150,6 @@ a{
   overflow: hidden;
   transition: 0.5s;
 }
-.project:active{
-}
 .project:hover{
   box-shadow: 0 0 20px 5px rgba(137, 180, 250, 0.4);
   transform: scale(1.25);
