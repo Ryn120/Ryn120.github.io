@@ -1,65 +1,97 @@
-<html>
-  <head>
-    <title>portofolio</title>
-    <link href="style.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  </head>
-  <body>
-    <nav>
-      <div class="profil">
-      <h1>portofolio</h1>
-      </div>
-      <div class="menu-cepat">
-        |
-        <a href="#aboutme">about-me</a>|
-        <a href="#project">project</a>|
-        <a href="#contact">contact</a>|
-      </div>
-    </nav>
-    <section id="aboutme">
-    <div class="container" id="aboutme">
-      <h2>About Me</h2>
-      <img src="rem.jpeg">
-      <p>Nama saya <b>Jonathan Setiawan</b> tinggal di Pd. maharta tangerang selatan. hal yang saya senangi yaitu berusaha mengerti cara kerja suatu hal, meskipun sekarang serba instan, saya percaya segala hal perlu proses yang dilalui dan itu bermakna contohnya <u><i><b>kematian.</b></i></u> kesimpulan bermakna tidak akan datang disaat yang instan</p>
-      <div>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="style.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>portofolio</title>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo">
+      <img src="jonathan.png">
     </div>
-    </section>
-    <section id="project">
-    <div class="projectbox">
-      <h2>Project</h2>
+    <div class="nav-link">
+      <ul>
+        <li><a href="#about-me">about-me</a></li>
+        <li><a href="#project">project</a></li>
+        <li><a href="#contact">contact</a></li>
+      </ul>
+    </div>
+  </nav>
+  <section id="beranda" class="top-section">
+  <div class="top-topic">
+    <h1>Jonathan Setiawan |</h1>
+    <h2>Teknik Jaringan Komputer dan Telekomunikasi</h2>
+    <p>Halo! Saya sangat tertarik dengan pengembangan antarmuka web yang responsif serta konfigurasi jaringan. Selamat datang di portofolio saya.</p>
+    <a href="#project" class="top-bttn">Cek Project</a>
+  </div>
+  <div class="top-img">
+    <img src="profil.png">
+  </div>
+  </section>
+  <section id="about-me" class="about-me">
+    <div class="information">
+      <h3>About Me</h3>
+      <p>Saya adalah seorang siswa TJKT yang memiliki minat besar dalam dunia teknologi. Saya suka mengeksplorasi pembuatan layout UI/UX menggunakan Flexbox dan Grid, serta memahami dasar-dasar administrasi server dan infrastruktur jaringan.</p>
+    </div>
+    <div class="skill">
+      <h3>Skill</h3>
+      <ul>
+        <li class="html">HTML</li>
+        <li class="css">css</li>
+        <li class="phpmyadmin">PHPMYADMIN</li>
+        <li>Gerbang Logic</li>
+        <li>GdScript</li>
+      </ul>
+    </div>
+  </section>
+  <section id="project" class="project">
+    <h3>Project</h3>
+    <div class="project-section">
     <div class="project-items">
-      <a href="https://qrgeneret.great-site.net/" target="_blank" ><div class="project">
-        <h3>Ticketing</h3>
-      </div></a>
-      <a href="https://rangkuman-code.great-site.net/" target="_blank"><div class="project">
-        <h3>Rangkuman</h3>
-      </div></a>
-      <a><div class="project">
-        <h3>Game</h3>
-        <p><u>Unfinished</u></p>
-      </div></a>
-    </div>
-    </div>
-    </section>
-    <section id="contact">
-    <div class="container">
-      <h2>contact</h2>
-      <div class="contact-group">
-      <a href="https://wa.me/+6281310784124" title="Hubungi/WA Saya"><div class="contact">
-        <img src="whatsapp.png">
-        Whatsapp
-        </div>
-        </a>
-      <a href="mailto: jjo129085@gmail.com"><div class="contact"><img src="email.png">@Gmail</div></a>
-    </div>
-    </div>
-    </section>
-    <footer>
-      <div>
-        <hr />
-        <p>&copy; Setiawan. Jonathan, <i>portofolio</i>,(tangerang selatan: github, 2026)</p>
+      <div class="project-img"><img></div>
+      <div class="project-text">
+        <h4>Pendaftaran Event Sekolah</h4>
+        <p>Web yang pernah dibuat teruntuk suatu event yang digelarkan oleh sekolah</p>
       </div>
-    </footer>
-  </body>
+    </div>
+      <div class="project-items">
+      <div class="project-img"><img></div>
+      <div class="project-text">
+        <h4>Game Godot 4</h4>
+        <p>game yang bergenre horror. berfokus pada penyelesaian puzzle untuk keluar dari gedung yang menakutkan</p>
+      </div>
+    </div>
+      <div class="project-items">
+      <div class="project-img"><img></div>
+      <div class="project-text">
+        <h4>Game Gdevelop</h4>
+        <p>game yang saya buat di gdevelop berfokus pada action rouge-like</p>
+      </div>
+    </div>
+    </div>
+  </section>
+  <section id="contact" class="contact-section">
+    <div class="contact-list">
+      <a class="contact" href="https://wa.me/+6281310784124">
+        <img src="whatsapp.png">&#x1F4AC; WhatsApp
+      </a>
+      <a class="contact" href="mailto: jjo129085@gmail.com"><img src="email.png">&#9993; @email</a>
+    </div>
+  </section>
+  <footer>
+    <div class="footer-img">
+      <img src="github.png">
+      <img >
+    </div>
+    <div class="footer-text">
+      <a>&copy; Setiawan. Jonathan, <i>portofolio</i>,(tangerang selatan: github, 2026)</a>
+    </div>
+  </footer>
+  
+  <div class="up">
+    <a href="#beranda">^</a>
+  </div>
+</body>
 </html>
