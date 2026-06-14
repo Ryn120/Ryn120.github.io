@@ -47,6 +47,9 @@ a{
   color: var(--warna-2);
   -webkit-tap-highlight-color: transparent;
 }
+section{
+-webkit-tap-highlight-color: transparent;
+}
 cite{
   color: var(--warna-2);
   float: right;
